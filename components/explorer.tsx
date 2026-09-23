@@ -7,6 +7,7 @@ import { RestaurantList } from "@/components/restaurant/list";
 import { RestaurantDetails } from "@/components/restaurant/details";
 import { cn } from "@/lib/utils";
 import type { Category, Restaurant, RestaurantPin } from "@/lib/schema";
+import { UserPlacesProvider } from "@/components/user/user-places-provider";
 
 /** Sem seleção mostra tudo; com seleção, mostra só quem tem TODAS as categorias marcadas. */
 export function matchesCategories(r: Restaurant, selected: Set<Category>) {
@@ -18,7 +19,7 @@ const LIST_W = 400;
 const PANEL_W = 500;
 const GUTTER = 28;
 
-export function Explorer({ restaurants, editable = false }: { restaurants: Restaurant[]; editable?: boolean }) {
+export function Explorer({ restaurants, editable = false, authEnabled = false }: { restaurants: Restaurant[]; editable?: boolean; authEnabled?: boolean }) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [categories, setCategories] = useState<Set<Category>>(() => new Set());
   const [listOpen, setListOpen] = useState(false); // só mobile
@@ -51,6 +52,7 @@ export function Explorer({ restaurants, editable = false }: { restaurants: Resta
   );
 
   return (
+    <UserPlacesProvider enabled={authEnabled}>
     <div className="relative h-dvh w-full overflow-hidden bg-background">
       {/* Mapa em tela cheia */}
       <div className="absolute inset-0">
@@ -73,6 +75,7 @@ export function Explorer({ restaurants, editable = false }: { restaurants: Resta
           categories={categories}
           onCategoriesChange={setCategories}
           pinCount={pins.length}
+          authEnabled={authEnabled}
         />
       </aside>
 
@@ -102,5 +105,6 @@ export function Explorer({ restaurants, editable = false }: { restaurants: Resta
         {selected && <RestaurantDetails key={selected.slug} r={selected} onClose={close} editable={editable} />}
       </section>
     </div>
+    </UserPlacesProvider>
   );
 }

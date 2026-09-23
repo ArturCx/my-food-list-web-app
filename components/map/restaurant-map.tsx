@@ -12,17 +12,12 @@ import {
 import { CATEGORY_COLOR } from "@/lib/categories";
 import type { Category, RestaurantPin } from "@/lib/schema";
 
-/** OpenFreeMap: gratuito, sem chave, sem limite. "bright" tem cor; o ruído é escondido abaixo. */
-const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
-/** Centro padrão: Belo Horizonte. */
-const DEFAULT_CENTER: [number, number] = [-43.9352, -19.9245];
+import { STYLE_URL, DEFAULT_CENTER, DEFAULT_PITCH, applyBaseStyle } from "./base-style";
+
 /** Usado só se não houver pins para calcular o zoom sem agrupamento. */
 const FALLBACK_ZOOM = 13;
 const CLUSTER_RADIUS = 44;
 const CLUSTER_MAX_ZOOM = 15;
-/** Inclinação padrão da câmera (0 = vista de cima, 60 = máximo). */
-const DEFAULT_PITCH = 55;
-
 const SOURCE = "restaurants";
 const L_CLUSTER_HALO = "restaurants-cluster-halo";
 const L_CLUSTER = "restaurants-cluster";
@@ -30,47 +25,6 @@ const L_CLUSTER_COUNT = "restaurants-cluster-count";
 const L_PINS = "restaurants-pins";
 const L_SELECTED_HALO = "restaurants-selected-halo";
 const ACTIVE_COLOR = "#f43f5e";
-
-/** Camadas do estilo que só adicionam ruído para o nosso caso (prefixos de id). */
-const HIDDEN_LAYER_PREFIXES = [
-  "poi", // pontos de interesse (lojas, bancos, etc.)
-  "building", // prédios
-  "railway", "bridge-railway", "tunnel-railway", "landuse-railway", "cablecar", // trilhos
-  "aeroway", "airport", // aeroportos
-  "highway-path", "bridge-path", "tunnel-path", // trilhas e calçadas
-  "highway-name-path", "highway-name-minor", // nomes de ruas pequenas (mantém as principais)
-  "highway-shield", "road_shield", "road_oneway", // escudos de rodovia e setas de mão única
-];
-
-/** Recolore as vias no espírito do Google Maps: cinza claro, sem o amarelo do estilo bright. */
-const ROAD_COLORS = {
-  casing: "#d9dde3", // borda de todas as vias
-  major: "#eef0f3", // motorway, trunk, primary
-  minor: "#ffffff", // secondary, tertiary, minor, link, service
-  label: "#6b7280", // nomes de via
-  labelHalo: "#ffffff",
-};
-const MAJOR_ROAD = /(motorway|trunk|primary)(?!-link)/;
-
-function recolorRoads(m: MLMap) {
-  for (const layer of m.getStyle().layers ?? []) {
-    const isRoad = /^(highway|bridge|tunnel)-/.test(layer.id) && !/(path|railway)/.test(layer.id);
-    if (!isRoad) continue;
-    if (layer.type === "line") {
-      const color = layer.id.endsWith("-casing")
-        ? ROAD_COLORS.casing
-        : MAJOR_ROAD.test(layer.id)
-          ? ROAD_COLORS.major
-          : ROAD_COLORS.minor;
-      m.setPaintProperty(layer.id, "line-color", color);
-    } else if (layer.type === "symbol" && layer.id.startsWith("highway-name")) {
-      m.setPaintProperty(layer.id, "text-color", ROAD_COLORS.label);
-      m.setPaintProperty(layer.id, "text-halo-color", ROAD_COLORS.labelHalo);
-    }
-  }
-  // Área de vias (praças de pedágio, rotatórias largas) segue o mesmo tom.
-  if (m.getLayer("highway-area")) m.setPaintProperty("highway-area", "fill-color", ROAD_COLORS.minor);
-}
 
 /**
  * Pins são imagens registradas no mapa e desenhados pelo WebGL no mesmo frame
@@ -317,12 +271,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
     map.current = m;
 
     m.on("load", async () => {
-      for (const layer of m.getStyle().layers ?? []) {
-        if (HIDDEN_LAYER_PREFIXES.some((p) => layer.id.startsWith(p))) {
-          m.setLayoutProperty(layer.id, "visibility", "none");
-        }
-      }
-      recolorRoads(m);
+      applyBaseStyle(m);
       await registerPinImages(m);
       if (!map.current) return; // desmontou enquanto carregava
       addLayers(m);

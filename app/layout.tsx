@@ -1,6 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Caveat, Plus_Jakarta_Sans } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { ptBR } from "@clerk/localizations";
 import "./globals.css";
+import { authEnabled } from "@/lib/auth";
+import { clerkAppearance } from "@/lib/clerk-appearance";
+
+const caveat = Caveat({
+  variable: "--font-hand",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+});
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -22,8 +32,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${jakarta.variable} h-full antialiased`}>
-      <body className="min-h-full">{children}</body>
+    <html lang="pt-BR" className={`${jakarta.variable} ${caveat.variable} h-full antialiased`}>
+      <body className="min-h-full">
+        {authEnabled() ? <ClerkProvider localization={ptBR} appearance={clerkAppearance}>{children}</ClerkProvider> : children}
+      </body>
     </html>
   );
 }

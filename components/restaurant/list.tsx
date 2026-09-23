@@ -2,13 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { SlidersHorizontal, X } from "lucide-react";
+import Link from "next/link";
+import { Route, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORY_COLOR, CATEGORY_GRADIENT } from "@/lib/categories";
 import { photoUrl } from "@/lib/photos";
 import { CATEGORY_ICON } from "@/lib/category-icons";
 import { CATEGORIES, type Category, type Restaurant } from "@/lib/schema";
 import { matchesCategories } from "@/components/explorer";
+import { AuthMenu } from "@/components/user/auth-menu";
 
 type Props = {
   restaurants: Restaurant[];
@@ -17,9 +19,10 @@ type Props = {
   categories: Set<Category>;
   onCategoriesChange: (c: Set<Category>) => void;
   pinCount: number;
+  authEnabled?: boolean;
 };
 
-export function RestaurantList({ restaurants, selectedSlug, onSelect, categories, onCategoriesChange, pinCount }: Props) {
+export function RestaurantList({ restaurants, selectedSlug, onSelect, categories, onCategoriesChange, pinCount, authEnabled = false }: Props) {
   const cats = (Object.keys(CATEGORIES) as Category[]).filter((c) => restaurants.some((r) => r.categories.includes(c)));
   const visible = restaurants.filter((r) => matchesCategories(r, categories));
   const filterKey = [...categories].sort().join("|"); // muda → lista reanima
@@ -41,13 +44,19 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
     <div className="flex h-full flex-col">
       <header className="flex items-center gap-3 px-5 pt-5 pb-3">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary shadow-[0_8px_20px_rgba(15,23,42,0.25)]">
-          <Image src="/logo.png" alt="" width={36} height={36} priority className="size-9" />
+          <Image src="/logo-mfl.png" alt="" width={36} height={36} priority className="size-9" />
         </div>
         <div className="min-w-0">
           <h1 className="text-xl font-extrabold tracking-tight">My Food List</h1>
           <p className="text-xs text-muted-foreground">
             {restaurants.length} lugares em Belo Horizonte · {pinCount} no mapa
           </p>
+        </div>
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <Link href="/rota" aria-label="Traçar rota entre bares" title="Rolê de bares" className="glass-soft flex size-10 items-center justify-center rounded-full transition-transform hover:scale-105 active:scale-95">
+            <Route className="size-4" />
+          </Link>
+          <AuthMenu enabled={authEnabled} />
         </div>
       </header>
 

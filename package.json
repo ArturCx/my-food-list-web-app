@@ -17,12 +17,18 @@
     "add-photo": "node scripts/add-photo.mjs",
     "apply-photos": "node scripts/apply-photo-list.mjs",
     "upload-photos": "node scripts/upload-photos.mjs",
-    "check-embeds": "node scripts/check-embeds.mjs"
+    "check-embeds": "node scripts/check-embeds.mjs",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@clerk/localizations": "^4.17.1",
+    "@clerk/nextjs": "^7.9.4",
+    "@neondatabase/serverless": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.3",
     "lucide-react": "^1.47.0",
     "maplibre-gl": "^6.10.0",
     "next": "16.3.6",
@@ -41,6 +47,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^18.0.3",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "sharp": "^0.35.4",

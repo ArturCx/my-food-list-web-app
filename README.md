@@ -51,6 +51,20 @@ pnpm upload-photos                # envia para o R2 só o que mudou (precisa do 
 
 Copie `.env.example` para `.env.local` e preencha as credenciais do R2. Em produção, defina `NEXT_PUBLIC_PHOTO_BASE_URL` com a URL pública do bucket.
 
+## Conta, avaliações e anotações (Clerk + Neon)
+
+Com login, cada usuário dá estrelas (1–5) e escreve uma anotação privada por lugar. Tudo fica na tabela `user_places` do Postgres; os lugares continuam nos JSONs.
+
+1. Clerk: crie uma aplicação em clerk.com e copie `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` e `CLERK_SECRET_KEY` para o `.env`.
+2. Neon: crie um projeto em neon.tech e copie a connection string para `DATABASE_URL`.
+3. `pnpm db:push` cria a tabela. `pnpm db:studio` abre o painel de dados.
+
+Sem as chaves do Clerk o site roda normalmente, só sem login e sem essas funções.
+
+## Rolê de bares (`/rota`)
+
+Escolha lugares no mapa ou na lista, opcionalmente parta da sua localização, e o app calcula a menor rota a pé passando por todos (ordem exata até 11 paradas, heurística até 15). Distâncias e trajeto vêm do Valhalla público do OpenStreetMap, sem chave.
+
 ## Stack
 
-Next.js (App Router, SSG), TypeScript, Tailwind 4, shadcn/ui, MapLibre GL com tiles vetoriais do OpenFreeMap (estilo Positron).
+Next.js (App Router), TypeScript, Tailwind 4, MapLibre GL com tiles do OpenFreeMap, Clerk (auth), Neon Postgres + Drizzle, Cloudflare R2 (fotos), Valhalla (rotas a pé).

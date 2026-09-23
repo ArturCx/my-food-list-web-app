@@ -45,3 +45,4 @@ next-env.d.ts
 
 # Fotos ficam no Cloudflare R2 (ver scripts/upload-photos.mjs)
 /public/restaurants/
+.neon

@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Hours } from "./hours";
 import { PhotoGallery } from "./photo-gallery";
 import { InstagramEmbed } from "./instagram-embed";
+import { PlaceRating } from "@/components/user/place-rating";
+import { RouteAddButton } from "@/components/route/route-add-button";
 
 type Props = { r: Restaurant; onClose?: () => void; editable?: boolean };
 
@@ -57,6 +59,14 @@ export function RestaurantDetails({ r, onClose, editable }: Props) {
       </div>
 
       <p className="animate-in fade-in slide-in-from-bottom-2 px-1 text-sm leading-relaxed duration-300 [animation-delay:120ms]">{r.description}</p>
+
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 [animation-delay:150ms]">
+        <RouteAddButton slug={r.slug} />
+      </div>
+
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 [animation-delay:170ms]">
+        <PlaceRating slug={r.slug} />
+      </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-2 grid grid-cols-2 gap-2.5 duration-300 [animation-delay:180ms]">
         <a

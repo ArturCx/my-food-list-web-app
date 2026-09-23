@@ -167,6 +167,95 @@
   box-shadow: none !important;
 }
 
+/* ---------- Bloquinho de anotação ---------- */
+.mfl-note {
+  --paper: #fff7c2;
+  position: relative;
+  margin-top: 14px; /* espaço para a fita */
+  background:
+    repeating-linear-gradient(transparent 0 27px, rgba(15, 23, 42, 0.08) 27px 28px) 0 12px / 100% 100%,
+    var(--paper);
+  border-radius: 4px 4px 10px 10px / 4px 4px 14px 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 10px 24px -8px rgba(15, 23, 42, 0.28),
+    0 2px 4px rgba(15, 23, 42, 0.08);
+  transform: rotate(-0.8deg);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.mfl-note:focus-within {
+  transform: rotate(0deg) translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 14px 30px -8px rgba(15, 23, 42, 0.32), 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+/* Fita adesiva pendurada no topo */
+.mfl-note::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 92px;
+  height: 24px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(255, 255, 255, 0.55);
+  border-left: 1px dashed rgba(15, 23, 42, 0.12);
+  border-right: 1px dashed rgba(15, 23, 42, 0.12);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(1px);
+}
+.mfl-note textarea {
+  font-family: var(--font-hand), "Segoe Print", "Bradley Hand", cursive;
+  font-size: 19px;
+  line-height: 28px;
+  color: #1f2937;
+  background: transparent;
+  border: 0;
+  outline: none;
+  width: 100%;
+  resize: none;
+  padding: 12px 16px 14px;
+}
+.mfl-note textarea::placeholder {
+  color: rgba(31, 41, 55, 0.45);
+}
+
+/* ---------- Clerk (modal de login) ---------- */
+/* Complementa o appearance: vidro fosco no cartão e desfoque no fundo. */
+.cl-modalBackdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.cl-cardBox {
+  width: min(92vw, 520px) !important;
+  max-width: 520px !important;
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  border-radius: 28px !important;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.22) !important;
+}
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton {
+  border-radius: 999px !important;
+  min-height: 44px;
+}
+.cl-formFieldInput {
+  border-radius: 14px !important;
+  min-height: 44px;
+}
+.cl-logoImage {
+  border-radius: 999px;
+  height: 56px;
+}
+/* O conteúdo interno do Clerk tem 400px fixos; com o cartão mais largo, ocupa tudo */
+.cl-cardBox > *,
+.cl-card,
+.cl-main,
+.cl-form,
+.cl-footer {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+}
+
 /* Scrollbar discreta nos painéis */
 .mfl-scroll {
   scrollbar-width: thin;
