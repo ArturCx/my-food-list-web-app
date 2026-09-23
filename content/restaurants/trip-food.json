@@ -1,0 +1,41 @@
+{
+  "slug": "trip-food",
+  "name": "Trip Food Pampulha",
+  "description": "Comida mochileira: street food de vários países e drinks do mundo, com vista da lagoa",
+  "category": "bar",
+  "address": "Av. Portugal, 2440 - Santa Amelia, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.8432532,
+    "lng": -43.9709718
+  },
+  "website": "https://tripfood.com.br/",
+  "instagram": "tripfoodbh",
+  "menuUrl": "https://tripfood.com.br/cardapio",
+  "hours": {
+    "mon": [
+      "17:00-00:00"
+    ],
+    "tue": [
+      "17:00-00:00"
+    ],
+    "wed": [
+      "17:00-00:00"
+    ],
+    "thu": [
+      "17:00-00:00"
+    ],
+    "fri": [
+      "17:00-01:00"
+    ],
+    "sat": [
+      "12:00-01:00"
+    ],
+    "sun": [
+      "12:00-23:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/trip-food/1.jpg",
+    "/restaurants/trip-food/2.jpg"
+  ]
+}

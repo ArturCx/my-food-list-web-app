@@ -1,0 +1,44 @@
+{
+  "slug": "hofbrauhaus",
+  "name": "Hofbräuhaus Belo Horizonte",
+  "description": "Cervejaria alemã de Munique com biergarten, chope Lei da Pureza e cozinha bávara",
+  "category": "cervejaria",
+  "address": "Av. do Contorno, 7613 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9355512,
+    "lng": -43.947186
+  },
+  "website": "https://hofbraubh.com.br/",
+  "instagram": "hofbrauhausbh",
+  "menuUrl": "https://hofbrauhaus-belo-horizonte.goomer.app/menu",
+  "hours": {
+    "tue": [
+      "12:00-14:00",
+      "18:00-00:00"
+    ],
+    "wed": [
+      "12:00-14:00",
+      "18:00-00:00"
+    ],
+    "thu": [
+      "12:00-14:00",
+      "18:00-00:00"
+    ],
+    "fri": [
+      "12:00-14:00",
+      "18:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ],
+    "sun": [
+      "12:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/hofbrauhaus/1.jpg",
+    "/restaurants/hofbrauhaus/2.jpg",
+    "/restaurants/hofbrauhaus/3.jpg",
+    "/restaurants/hofbrauhaus/4.jpg"
+  ]
+}

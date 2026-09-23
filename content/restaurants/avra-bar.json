@@ -1,0 +1,40 @@
+{
+  "slug": "avra-bar",
+  "name": "Avra Bar",
+  "description": "Bar do chef Mario Versiani: cozinha de quintal brasileiro no forno a lenha e coquetéis",
+  "category": "bar",
+  "address": "Rua Santa Catarina, 1287 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9320112,
+    "lng": -43.9463228
+  },
+  "instagram": "avra.bar",
+  "hours": {
+    "mon": [
+      "17:00-00:00"
+    ],
+    "tue": [
+      "17:00-00:00"
+    ],
+    "wed": [
+      "17:00-01:00"
+    ],
+    "thu": [
+      "17:00-01:00"
+    ],
+    "fri": [
+      "12:00-01:00"
+    ],
+    "sat": [
+      "12:00-01:00"
+    ],
+    "sun": [
+      "12:00-23:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/avra-bar/1.jpg",
+    "/restaurants/avra-bar/2.jpg",
+    "/restaurants/avra-bar/3.jpg"
+  ]
+}

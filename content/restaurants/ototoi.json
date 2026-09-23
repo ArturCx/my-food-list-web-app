@@ -1,0 +1,33 @@
+{
+  "slug": "ototoi",
+  "name": "Ototoi",
+  "description": "Bar de discos (vinil) com drinks autorais e petiscos orientais",
+  "category": "bar",
+  "address": "Avenida do Contorno, 5602 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.939546,
+    "lng": -43.9312381
+  },
+  "instagram": "ototoibardediscos",
+  "hours": {
+    "tue": [
+      "19:00-23:00"
+    ],
+    "wed": [
+      "19:00-23:00"
+    ],
+    "thu": [
+      "19:00-00:00"
+    ],
+    "fri": [
+      "19:00-01:00"
+    ],
+    "sat": [
+      "19:00-01:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/ototoi/1.jpg",
+    "/restaurants/ototoi/2.jpg"
+  ]
+}

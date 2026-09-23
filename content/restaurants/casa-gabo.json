@@ -1,0 +1,34 @@
+{
+  "slug": "casa-gabo",
+  "name": "Casa Gabo",
+  "description": "Bar latino da chef Ornela Mattos em casarão de 1897: empanadas, lomo saltado e drinks",
+  "category": "bar",
+  "address": "Avenida Cristóvão Colombo, 336 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9369801,
+    "lng": -43.9360943
+  },
+  "instagram": "casa.gabo.bh",
+  "hours": {
+    "tue": [
+      "18:00-23:00"
+    ],
+    "wed": [
+      "18:00-23:00"
+    ],
+    "thu": [
+      "18:00-00:00"
+    ],
+    "fri": [
+      "18:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/casa-gabo/1.jpg",
+    "/restaurants/casa-gabo/2.jpg",
+    "/restaurants/casa-gabo/3.jpg"
+  ]
+}

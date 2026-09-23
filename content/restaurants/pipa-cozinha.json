@@ -1,0 +1,28 @@
+{
+  "slug": "pipa-cozinha",
+  "name": "Pipa! Cozinha",
+  "description": "Cozinha boêmia de boteco: petiscos e porções para compartilhar com cerveja e drinks",
+  "category": "bar",
+  "address": "Rua Teixeira de Freitas, 573 - Santo Antônio, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9476458,
+    "lng": -43.9473679
+  },
+  "instagram": "pipacozinha",
+  "menuUrl": "https://menu.beefood.com.br/pipacozinhaboemia/",
+  "hours": {
+    "wed": [
+      "18:00-23:30"
+    ],
+    "thu": [
+      "18:00-23:30"
+    ],
+    "fri": [
+      "18:00-23:30"
+    ],
+    "sat": [
+      "18:00-23:30"
+    ]
+  },
+  "photos": []
+}

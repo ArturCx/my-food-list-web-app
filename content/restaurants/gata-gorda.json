@@ -1,0 +1,38 @@
+{
+  "slug": "gata-gorda",
+  "name": "Gata Gorda",
+  "description": "Bodega moderna da chef Bruna Martins: cozinha espanhola com sotaque mineiro",
+  "category": "restaurante",
+  "address": "Rua Levindo Lopes, 96 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9377852,
+    "lng": -43.9396384
+  },
+  "instagram": "gatagorda.bh",
+  "menuUrl": "https://livemenu.app/menu/673e19155b41c5913d17d065",
+  "hours": {
+    "tue": [
+      "18:00-00:00"
+    ],
+    "wed": [
+      "12:00-00:00"
+    ],
+    "thu": [
+      "12:00-00:00"
+    ],
+    "fri": [
+      "12:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/gata-gorda/1.jpg",
+    "/restaurants/gata-gorda/2.jpg",
+    "/restaurants/gata-gorda/3.jpg"
+  ]
+}

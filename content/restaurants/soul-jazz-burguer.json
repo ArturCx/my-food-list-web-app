@@ -1,0 +1,38 @@
+{
+  "slug": "soul-jazz-burguer",
+  "name": "Soul Jazz Burger",
+  "description": "Hambúrguer artesanal com pães e molhos próprios e jazz ao vivo",
+  "category": "hamburgueria",
+  "address": "R. Conselheiro Rocha, 2809 - Santa Tereza, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9103333,
+    "lng": -43.9129614
+  },
+  "website": "https://souljazzburger.com.br/",
+  "instagram": "souljazzburger",
+  "menuUrl": "https://livemenu.app/menu/64ad7161b0d60f00549f0599",
+  "hours": {
+    "tue": [
+      "17:00-23:00"
+    ],
+    "wed": [
+      "17:00-23:00"
+    ],
+    "thu": [
+      "17:00-23:00"
+    ],
+    "fri": [
+      "17:00-23:00"
+    ],
+    "sat": [
+      "17:00-23:00"
+    ],
+    "sun": [
+      "17:00-23:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/soul-jazz-burguer/1.jpg",
+    "/restaurants/soul-jazz-burguer/2.jpg"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "pacato",
+  "name": "Pacato",
+  "description": "Cozinha mineira contemporânea do chef Caio Soter; à la carte e menu degustação",
+  "category": "alta-gastronomia",
+  "badge": "TOP 35 do BRASIL",
+  "address": "R. Rio de Janeiro, 2735 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9356464,
+    "lng": -43.9432261
+  },
+  "website": "https://pacatobh.com.br/",
+  "instagram": "pacatobh",
+  "menuUrl": "https://pacatobh.com.br/menu/",
+  "hours": {
+    "wed": [
+      "12:00-16:00",
+      "19:00-23:00"
+    ],
+    "thu": [
+      "12:00-16:00",
+      "19:00-23:00"
+    ],
+    "fri": [
+      "12:00-16:00",
+      "19:00-23:00"
+    ],
+    "sat": [
+      "12:00-16:00",
+      "19:00-23:00"
+    ],
+    "sun": [
+      "12:00-16:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/pacato/1.jpg",
+    "/restaurants/pacato/2.jpg",
+    "/restaurants/pacato/3.jpg"
+  ]
+}

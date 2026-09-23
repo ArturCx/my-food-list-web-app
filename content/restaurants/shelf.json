@@ -1,0 +1,39 @@
+{
+  "slug": "shelf",
+  "name": "Shelf Bar e Jogos",
+  "description": "Bar de jogos de tabuleiro com mais de 800 jogos, drinks, chope e petiscos",
+  "category": "bar",
+  "address": "Avenida do Contorno, 7287 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9375783,
+    "lng": -43.9448491
+  },
+  "website": "https://shelfbar.com.br/",
+  "instagram": "shelfbar",
+  "menuUrl": "https://www.vucafood.com.br/funminds/2365/cardapio-digital",
+  "hours": {
+    "tue": [
+      "15:00-00:00"
+    ],
+    "wed": [
+      "15:00-00:00"
+    ],
+    "thu": [
+      "15:00-00:00"
+    ],
+    "fri": [
+      "15:00-01:00"
+    ],
+    "sat": [
+      "15:00-01:00"
+    ],
+    "sun": [
+      "15:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/shelf/1.jpg",
+    "/restaurants/shelf/2.jpg",
+    "/restaurants/shelf/3.jpg"
+  ]
+}

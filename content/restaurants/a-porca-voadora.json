@@ -1,0 +1,34 @@
+{
+  "slug": "a-porca-voadora",
+  "name": "A Porca Voadora",
+  "description": "Bar e armazém com cozinha mineira de boteco autoral da chef Bruna Rezende",
+  "category": "bar",
+  "address": "Rua do Ouro, 1709 - Serra, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.946081,
+    "lng": -43.9190268
+  },
+  "instagram": "aporcavoadorabar",
+  "hours": {
+    "wed": [
+      "18:00-23:00"
+    ],
+    "thu": [
+      "18:00-23:00"
+    ],
+    "fri": [
+      "12:00-23:00"
+    ],
+    "sat": [
+      "12:00-23:00"
+    ],
+    "sun": [
+      "12:00-18:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/a-porca-voadora/1.jpg",
+    "/restaurants/a-porca-voadora/2.jpg",
+    "/restaurants/a-porca-voadora/3.jpg"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "slug": "vizu",
+  "name": "Vizú Pizza Bar",
+  "description": "Pizza e listening bar: pizzas de longa fermentação, drinks autorais e boa música",
+  "category": "bar",
+  "address": "Avenida Getúlio Vargas, 1445 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9386893,
+    "lng": -43.9362032
+  },
+  "instagram": "vizupizzabar",
+  "hours": {
+    "tue": [
+      "18:00-00:00"
+    ],
+    "wed": [
+      "18:00-00:00"
+    ],
+    "thu": [
+      "18:00-00:00"
+    ],
+    "fri": [
+      "19:00-01:00"
+    ],
+    "sat": [
+      "14:00-01:00"
+    ],
+    "sun": [
+      "18:00-01:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/vizu/1.jpg",
+    "/restaurants/vizu/2.jpg",
+    "/restaurants/vizu/3.jpg"
+  ]
+}

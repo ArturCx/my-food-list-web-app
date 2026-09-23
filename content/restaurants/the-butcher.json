@@ -1,0 +1,38 @@
+{
+  "slug": "the-butcher",
+  "name": "The Butcher Bar",
+  "description": "Gastropub de carnes nobres na brasa, chope e cervejas artesanais",
+  "category": "restaurante",
+  "address": "Av. Ressaca, 353 - Minas Brasil, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9178362,
+    "lng": -43.9877009
+  },
+  "instagram": "thebutcherbar",
+  "menuUrl": null,
+  "hours": {
+    "tue": [
+      "17:00-23:30"
+    ],
+    "wed": [
+      "17:00-23:30"
+    ],
+    "thu": [
+      "17:00-23:30"
+    ],
+    "fri": [
+      "17:00-23:30"
+    ],
+    "sat": [
+      "12:00-23:30"
+    ],
+    "sun": [
+      "12:00-18:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/the-butcher/1.jpg",
+    "/restaurants/the-butcher/2.jpg",
+    "/restaurants/the-butcher/3.jpg"
+  ]
+}

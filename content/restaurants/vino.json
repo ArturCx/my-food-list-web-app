@@ -1,0 +1,36 @@
+{
+  "slug": "vino",
+  "name": "Vino! Savassi",
+  "description": "Wine bar com mais de 200 rótulos, open wine, burrata, pizzas e risotos",
+  "category": "wine-bar",
+  "address": "R. Sergipe, 1341 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9382453,
+    "lng": -43.9382918
+  },
+  "instagram": "vinobhsavassi",
+  "menuUrl": "https://drive.google.com/file/d/17PGIE0r_xi8y_AYZ2LcbCvOqw5Orn_hH/view",
+  "hours": {
+    "mon": [
+      "18:00-00:00"
+    ],
+    "tue": [
+      "18:00-00:00"
+    ],
+    "wed": [
+      "18:00-00:00"
+    ],
+    "thu": [
+      "18:00-00:00"
+    ],
+    "fri": [
+      "18:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/vino/1.jpg"
+  ]
+}
