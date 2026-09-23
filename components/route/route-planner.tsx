@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Footprints, LocateFixed, Route, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Footprints, LocateFixed, Route, Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, type Restaurant } from "@/lib/schema";
 import { CATEGORY_COLOR } from "@/lib/categories";
@@ -109,12 +109,31 @@ export function RoutePlanner({ restaurants }: { restaurants: Restaurant[] }) {
               const Icon = CATEGORY_ICON[r.categories[0]];
               return (
                 <li key={r.slug}>
-                  <button type="button" onClick={() => toggle(r.slug)} aria-pressed={on} className={cn("flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition-colors hover:bg-white/55", on && "bg-white/85 shadow-[0_6px_18px_rgba(15,23,42,0.08)]")}>
-                    <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors", on ? "border-primary bg-primary text-primary-foreground" : "border-white/80 text-white")} style={on ? undefined : { background: CATEGORY_COLOR[r.categories[0]] }}>
-                      <Icon className="size-4" strokeWidth={2.5} />
+                  <button
+                    type="button"
+                    onClick={() => toggle(r.slug)}
+                    aria-pressed={on}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition-[background-color,box-shadow] hover:bg-white/55",
+                      on && "bg-blue-600/10 shadow-[inset_0_0_0_1.5px_rgba(37,99,235,0.45)]",
+                    )}
+                  >
+                    {/* Ícone: desbotado quando fora do rolê; azul da rota (mesmo do mapa) quando dentro */}
+                    <span
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-full border-2 transition-[background-color,color,transform]",
+                        on ? "scale-105 border-blue-600 bg-blue-600 text-white shadow-[0_6px_14px_rgba(37,99,235,0.4)]" : "border-white/80",
+                      )}
+                      // Fora do rolê: versão pastel da cor da categoria (opaca, ainda parece clicável)
+                      style={on ? undefined : {
+                        background: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 28%, white)`,
+                        color: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 75%, #1e293b)`,
+                      }}
+                    >
+                      {on ? <Check className="size-4" strokeWidth={3} /> : <Icon className="size-4" strokeWidth={2.5} />}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-bold">{r.name}</span>
+                      <span className={cn("block truncate text-[15px] font-bold transition-colors", on ? "text-blue-700" : "text-foreground")}>{r.name}</span>
                       <span className="block truncate text-xs text-muted-foreground">{r.categories.map((c) => CATEGORIES[c]).join(", ")}</span>
                     </span>
                   </button>
