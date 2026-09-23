@@ -15,7 +15,7 @@ export function matchesCategories(r: Restaurant, selected: Set<Category>) {
 }
 
 const LIST_W = 400;
-const PANEL_W = 420;
+const PANEL_W = 500;
 const GUTTER = 28;
 
 export function Explorer({ restaurants, editable = false }: { restaurants: Restaurant[]; editable?: boolean }) {
@@ -54,7 +54,7 @@ export function Explorer({ restaurants, editable = false }: { restaurants: Resta
     <div className="relative h-dvh w-full overflow-hidden bg-background">
       {/* Mapa em tela cheia */}
       <div className="absolute inset-0">
-        <RestaurantMap pins={pins} selectedSlug={selectedSlug} onSelect={onSelect} padding={padding} />
+        <RestaurantMap pins={pins} selectedSlug={selectedSlug} onSelect={onSelect} onDeselect={close} padding={padding} />
       </div>
 
       {/* Lista flutuante (desktop) / sheet (mobile) */}
@@ -92,7 +92,7 @@ export function Explorer({ restaurants, editable = false }: { restaurants: Resta
         aria-hidden={!selected}
         className={cn(
           "glass mfl-scroll absolute z-30 overflow-y-auto rounded-[28px] transition-all duration-300",
-          "md:top-7 md:bottom-7 md:right-7 md:left-auto md:w-[420px]",
+          "md:top-7 md:bottom-7 md:right-7 md:left-auto md:w-[500px]",
           "inset-x-3 bottom-3 top-[12dvh]",
           selected
             ? "translate-y-0 opacity-100 md:translate-x-0"

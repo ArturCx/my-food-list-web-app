@@ -5,6 +5,11 @@
  *   N-thumb.jpg  192x192 cover, para a lista (48px em telas 2x/4x)
  * e atualiza a lista `photos` do JSON (só os originais).
  * Respeita `photoFocus` ao recortar a thumbnail.
+ *
+ * Idempotente: o original só é recomprimido se for png/webp ou maior que 1600px
+ * (recomprimir jpg a cada rodada degradaria a foto e mudaria os bytes, forçando
+ * reupload). As variantes só são regeradas se faltarem, se o original for mais
+ * novo, ou se o foco da thumbnail mudou (hash do foco guardado em .focus.json).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -30,35 +35,57 @@ async function thumbnail(buf, focus) {
   return sharp(buf).resize(sw, sh).extract({ left, top, width: THUMB, height: THUMB }).jpeg({ quality: 75, mozjpeg: true }).toBuffer();
 }
 
-let before = 0, after = 0;
+let before = 0, after = 0, touched = 0;
 for (const slug of fs.readdirSync(ROOT)) {
   const dir = path.join(ROOT, slug);
   if (!fs.statSync(dir).isDirectory()) continue;
   const jf = path.join(CONTENT, `${slug}.json`);
   const r = fs.existsSync(jf) ? JSON.parse(fs.readFileSync(jf, "utf8")) : null;
 
+  const focusFile = path.join(dir, ".focus.json");
+  const focusSeen = fs.existsSync(focusFile) ? JSON.parse(fs.readFileSync(focusFile, "utf8")) : {};
+
   for (const f of fs.readdirSync(dir)) {
     if (!isOriginal(f)) continue;
-    const p = path.join(dir, f);
-    const buf = fs.readFileSync(p);
+    let p = path.join(dir, f);
+    let buf = fs.readFileSync(p);
     before += buf.length;
-    const base = sharp(buf).rotate();
-    const out = await base.clone().resize({ width: 1600, withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
-    const dest = p.replace(/\.(png|webp|jpeg)$/i, ".jpg");
-    if (dest !== p) fs.unlinkSync(p);
-    fs.writeFileSync(dest, out);
-    after += out.length;
 
-    const stem = path.basename(dest, ".jpg");
-    const focus = r?.photoFocus?.[`/restaurants/${slug}/${stem}.jpg`];
-    const md = await base.clone().resize({ width: 960, withoutEnlargement: true }).jpeg({ quality: 78, mozjpeg: true }).toBuffer();
-    fs.writeFileSync(path.join(dir, `${stem}-md.jpg`), md);
-    fs.writeFileSync(path.join(dir, `${stem}-thumb.jpg`), await thumbnail(out, focus));
+    // Original: recomprime só se precisar.
+    const meta = await sharp(buf).metadata();
+    const needsEncode = !/\.jpe?g$/i.test(f) || (meta.width ?? 0) > 1600 || (meta.orientation ?? 1) !== 1;
+    if (needsEncode) {
+      const out = await sharp(buf).rotate().resize({ width: 1600, withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
+      const dest = p.replace(/\.(png|webp|jpeg)$/i, ".jpg");
+      if (dest !== p) fs.unlinkSync(p);
+      fs.writeFileSync(dest, out);
+      p = dest; buf = out; touched++;
+    }
+    after += buf.length;
+
+    const stem = path.basename(p, ".jpg");
+    const key = `/restaurants/${slug}/${stem}.jpg`;
+    const focus = r?.photoFocus?.[key];
+    const focusKey = focus ? `${focus.x},${focus.y}` : "";
+    const mdPath = path.join(dir, `${stem}-md.jpg`), thumbPath = path.join(dir, `${stem}-thumb.jpg`);
+    const mtime = fs.statSync(p).mtimeMs;
+    const stale = (v) => !fs.existsSync(v) || fs.statSync(v).mtimeMs < mtime;
+
+    if (stale(mdPath)) {
+      fs.writeFileSync(mdPath, await sharp(buf).resize({ width: 960, withoutEnlargement: true }).jpeg({ quality: 78, mozjpeg: true }).toBuffer());
+      touched++;
+    }
+    if (stale(thumbPath) || focusSeen[stem] !== focusKey) {
+      fs.writeFileSync(thumbPath, await thumbnail(buf, focus));
+      focusSeen[stem] = focusKey;
+      touched++;
+    }
   }
+  fs.writeFileSync(focusFile, JSON.stringify(focusSeen));
 
   if (r) {
     r.photos = fs.readdirSync(dir).filter(isOriginal).sort((a, b) => parseInt(a) - parseInt(b)).map((f) => `/restaurants/${slug}/${f}`);
     fs.writeFileSync(jf, JSON.stringify(r, null, 2) + "\n");
   }
 }
-console.log(`${(before / 1e6).toFixed(1)} MB → ${(after / 1e6).toFixed(1)} MB (originais) + variantes md/thumb`);
+console.log(`${touched} arquivo(s) gerado(s); originais: ${(before / 1e6).toFixed(1)} MB → ${(after / 1e6).toFixed(1)} MB`);

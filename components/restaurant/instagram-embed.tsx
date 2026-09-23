@@ -22,15 +22,20 @@ export function InstagramEmbed({ url }: { url: string }) {
     document.body.appendChild(s);
   }, [url]);
 
+  // O embed vira um iframe do Instagram; não dá para estilizar por dentro.
+  // O wrapper esconde a faixa de baixo (curtidas, comentários, "ver mais"),
+  // cortando os últimos --ig-crop px. Ajuste em globals.css se o Instagram mudar o layout.
   return (
-    <blockquote
-      className="instagram-media w-full"
-      data-instgrm-permalink={url}
-      data-instgrm-version="14"
-    >
-      <a href={url} target="_blank" rel="noreferrer">
-        Ver no Instagram
-      </a>
-    </blockquote>
+    <div className="mfl-ig-crop">
+      <blockquote
+        className="instagram-media w-full"
+        data-instgrm-permalink={url}
+        data-instgrm-version="14"
+      >
+        <a href={url} target="_blank" rel="noreferrer">
+          Ver no Instagram
+        </a>
+      </blockquote>
+    </div>
   );
 }

@@ -1,0 +1,46 @@
+{
+  "slug": "balcao-savassi",
+  "name": "Balcão Savassi",
+  "description": "Sanduíches de fermentação natural, defumados e drinks autorais, de Diogo Manfredini",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
+  "address": "Rua Fernandes Tourinho, 19 - Savassi, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.939385,
+    "lng": -43.935918
+  },
+  "website": "https://balcaosavassi.com.br/",
+  "instagram": "balcaosavassi",
+  "instagramEmbed": "https://www.instagram.com/p/DWY-PaYEdEK/",
+  "hours": {
+    "tue": [
+      "17:00-00:00"
+    ],
+    "wed": [
+      "17:00-00:00"
+    ],
+    "thu": [
+      "17:00-00:00"
+    ],
+    "fri": [
+      "17:00-00:00"
+    ],
+    "sat": [
+      "17:00-00:00"
+    ],
+    "sun": [
+      "17:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/balcao-savassi/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/balcao-savassi/1.jpg": {
+      "x": 69,
+      "y": 48
+    }
+  }
+}

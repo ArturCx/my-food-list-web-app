@@ -151,6 +151,22 @@
   }
 }
 
+/* Embed do Instagram: corta a faixa inferior (curtidas/comentários) do iframe */
+.mfl-ig-crop {
+  --ig-crop: 190px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+.mfl-ig-crop > iframe,
+.mfl-ig-crop > blockquote {
+  margin-bottom: calc(-1 * var(--ig-crop)) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
 /* Scrollbar discreta nos painéis */
 .mfl-scroll {
   scrollbar-width: thin;

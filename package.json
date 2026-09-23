@@ -16,7 +16,8 @@
     "optimize-photos": "node scripts/optimize-photos.mjs",
     "add-photo": "node scripts/add-photo.mjs",
     "apply-photos": "node scripts/apply-photo-list.mjs",
-    "upload-photos": "node scripts/upload-photos.mjs"
+    "upload-photos": "node scripts/upload-photos.mjs",
+    "check-embeds": "node scripts/check-embeds.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

@@ -16,7 +16,10 @@ import type { Category, RestaurantPin } from "@/lib/schema";
 const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
 /** Centro padrão: Belo Horizonte. */
 const DEFAULT_CENTER: [number, number] = [-43.9352, -19.9245];
-const DEFAULT_ZOOM = 11.5;
+/** Usado só se não houver pins para calcular o zoom sem agrupamento. */
+const FALLBACK_ZOOM = 13;
+const CLUSTER_RADIUS = 44;
+const CLUSTER_MAX_ZOOM = 15;
 /** Inclinação padrão da câmera (0 = vista de cima, 60 = máximo). */
 const DEFAULT_PITCH = 55;
 
@@ -106,10 +109,36 @@ async function registerPinImages(m: MLMap) {
   );
 }
 
+/**
+ * Menor zoom em que nenhum pin agrupa: o primeiro em que todos os pares ficam
+ * a mais de CLUSTER_RADIUS px de distância na projeção Web Mercator (tiles de 512px).
+ */
+function noClusterZoom(pins: RestaurantPin[]): number {
+  if (pins.length < 2) return FALLBACK_ZOOM;
+  const merc = pins.map((p) => {
+    const lat = (p.coordinates.lat * Math.PI) / 180;
+    return [ (p.coordinates.lng + 180) / 360, (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 ];
+  });
+  for (let z = 10; z <= CLUSTER_MAX_ZOOM; z += 0.1) {
+    const scale = 512 * 2 ** z;
+    let ok = true;
+    outer: for (let i = 0; i < merc.length; i++) {
+      for (let j = i + 1; j < merc.length; j++) {
+        const dx = (merc[i][0] - merc[j][0]) * scale, dy = (merc[i][1] - merc[j][1]) * scale;
+        if (Math.hypot(dx, dy) < CLUSTER_RADIUS * 1.05) { ok = false; break outer; }
+      }
+    }
+    if (ok) return Math.round(z * 10) / 10;
+  }
+  return CLUSTER_MAX_ZOOM;
+}
+
 type Props = {
   pins: RestaurantPin[];
   selectedSlug: string | null;
   onSelect: (slug: string) => void;
+  /** Clique no mapa fora de pins e clusters. */
+  onDeselect?: () => void;
   /** Espaço ocupado por painéis flutuantes, para o flyTo não esconder o pin atrás deles. */
   padding?: { left: number; right: number };
 };
@@ -133,8 +162,8 @@ function addLayers(m: MLMap) {
     type: "geojson",
     data: toGeoJSON([], null),
     cluster: true,
-    clusterRadius: 44,
-    clusterMaxZoom: 15,
+    clusterRadius: CLUSTER_RADIUS,
+    clusterMaxZoom: CLUSTER_MAX_ZOOM,
   });
 
   // Clusters: bolha branca translúcida com halo suave e contador.
@@ -219,7 +248,10 @@ function animateHalo(m: MLMap) {
   return () => cancelAnimationFrame(raf);
 }
 
-export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }: Props) {
+/** Graus por segundo da rotação lenta em torno do pin selecionado. */
+const ORBIT_SPEED = 2.5;
+
+export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const loaded = useRef(false);
@@ -227,22 +259,45 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
 
   // Refs para os handlers do mapa não ficarem presos a closures antigas.
   const onSelectRef = useRef(onSelect);
+  const onDeselectRef = useRef(onDeselect);
   const dataRef = useRef({ pins, selectedSlug });
   useEffect(() => {
     onSelectRef.current = onSelect;
+    onDeselectRef.current = onDeselect;
     dataRef.current = { pins, selectedSlug };
-  }, [onSelect, pins, selectedSlug]);
+  }, [onSelect, onDeselect, pins, selectedSlug]);
+
+  // Rotação lenta ("órbita") em torno do pin selecionado.
+  const orbitRaf = useRef(0);
+  const stopOrbit = () => {
+    cancelAnimationFrame(orbitRaf.current);
+    orbitRaf.current = 0;
+  };
+  const startOrbit = (m: MLMap) => {
+    stopOrbit();
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      // O centro já está deslocado pelo padding, então girar mantém o pin parado na tela.
+      m.setBearing(m.getBearing() + ORBIT_SPEED * dt);
+      orbitRaf.current = requestAnimationFrame(tick);
+    };
+    orbitRaf.current = requestAnimationFrame(tick);
+  };
 
   // Init
   useEffect(() => {
     if (!container.current || map.current) return;
     // Worker servido de public/ (ver scripts/copy-maplibre-worker.mjs).
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+    // Zoom padrão: o menor em que nenhum pin aparece agrupado.
+    const defaultZoom = noClusterZoom(dataRef.current.pins);
     const m = new MLMap({
       container: container.current,
       style: STYLE_URL,
       center: DEFAULT_CENTER,
-      zoom: DEFAULT_ZOOM,
+      zoom: defaultZoom,
       pitch: DEFAULT_PITCH,
       attributionControl: { compact: true },
     });
@@ -256,7 +311,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
       trackUserLocation: false,
       showUserLocation: true,
       showAccuracyCircle: true,
-      fitBoundsOptions: { maxZoom: 14, pitch: DEFAULT_PITCH },
+      fitBoundsOptions: { maxZoom: defaultZoom, pitch: DEFAULT_PITCH },
     });
     m.addControl(geolocate, "bottom-right");
     map.current = m;
@@ -280,6 +335,15 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
     });
 
     // Interação
+    m.on("click", (e: MapMouseEvent) => {
+      const hit = m.queryRenderedFeatures(e.point, { layers: [L_PINS, L_CLUSTER] });
+      if (hit.length === 0) onDeselectRef.current?.();
+    });
+    // Qualquer gesto do usuário (não movimentos programáticos) interrompe a rotação.
+    for (const ev of ["dragstart", "zoomstart", "rotatestart", "pitchstart"] as const) {
+      m.on(ev, (e) => { if (e.originalEvent) stopOrbit(); });
+    }
+    m.on("wheel", () => stopOrbit());
     m.on("click", L_PINS, (e: MapMouseEvent) => {
       const f = m.queryRenderedFeatures(e.point, { layers: [L_PINS] })[0];
       const slug = f?.properties?.slug as string | undefined;
@@ -298,6 +362,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
     }
 
     return () => {
+      stopOrbit();
       stopHalo.current?.();
       m.remove();
       map.current = null;
@@ -312,11 +377,14 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
     (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins, selectedSlug));
   }, [pins, selectedSlug]);
 
-  // Voa até o selecionado
+  // Voa até o selecionado e, ao chegar, começa a girar devagar em torno dele.
   useEffect(() => {
     const m = map.current;
+    stopOrbit();
     const pin = pins.find((p) => p.slug === selectedSlug);
     if (!m || !pin) return;
+    let cancelled = false;
+    m.once("moveend", () => { if (!cancelled) startOrbit(m); });
     m.flyTo({
       center: [pin.coordinates.lng, pin.coordinates.lat],
       zoom: Math.max(m.getZoom(), 15),
@@ -324,6 +392,8 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
       padding: { left: padding?.left ?? 0, right: padding?.right ?? 0, top: 0, bottom: 0 },
       duration: 700,
     });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSlug, pins, padding]);
 
   return <div ref={container} className="h-full w-full" />;
