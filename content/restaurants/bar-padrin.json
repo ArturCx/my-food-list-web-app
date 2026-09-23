@@ -2,7 +2,10 @@
   "slug": "bar-padrin",
   "name": "Bar Padrin",
   "description": "Gastrobar do chef Daniel Tassi: petiscos autorais para dividir e drinks com cachaça",
-  "category": "bar",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
   "address": "Rua Campanha, 11 - Carmo, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9431399,
@@ -24,8 +27,12 @@
     ]
   },
   "photos": [
-    "/restaurants/bar-padrin/1.jpg",
-    "/restaurants/bar-padrin/2.jpg",
-    "/restaurants/bar-padrin/3.jpg"
-  ]
+    "/restaurants/bar-padrin/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/bar-padrin/1.jpg": {
+      "x": 49,
+      "y": 31
+    }
+  }
 }

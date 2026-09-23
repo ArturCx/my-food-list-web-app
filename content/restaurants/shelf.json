@@ -2,7 +2,9 @@
   "slug": "shelf",
   "name": "Shelf Bar e Jogos",
   "description": "Bar de jogos de tabuleiro com mais de 800 jogos, drinks, chope e petiscos",
-  "category": "bar",
+  "categories": [
+    "bar"
+  ],
   "address": "Avenida do Contorno, 7287 - Lourdes, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9375783,
@@ -32,8 +34,12 @@
     ]
   },
   "photos": [
-    "/restaurants/shelf/1.jpg",
-    "/restaurants/shelf/2.jpg",
-    "/restaurants/shelf/3.jpg"
-  ]
+    "/restaurants/shelf/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/shelf/1.jpg": {
+      "x": 46,
+      "y": 58
+    }
+  }
 }

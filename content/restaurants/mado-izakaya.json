@@ -2,7 +2,10 @@
   "slug": "mado-izakaya",
   "name": "Madō Izakaya",
   "description": "Izakaya intimista do chef Will Lima: ramen, gyoza, karaage, robata e umeshu",
-  "category": "restaurante",
+  "categories": [
+    "cozinha-asiatica",
+    "bar"
+  ],
   "address": "Rua Major Lopes, 103 - São Pedro, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9426941,
@@ -30,8 +33,6 @@
     ]
   },
   "photos": [
-    "/restaurants/mado-izakaya/1.jpg",
-    "/restaurants/mado-izakaya/2.jpg",
-    "/restaurants/mado-izakaya/3.jpg"
+    "/restaurants/mado-izakaya/1.jpg"
   ]
 }

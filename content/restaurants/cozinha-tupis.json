@@ -2,8 +2,11 @@
   "slug": "cozinha-tupis",
   "name": "Cozinha Tupis",
   "description": "Cozinha contemporânea do chef Henrique Gilberto no Mercado Novo, com raízes mineiras",
-  "category": "alta-gastronomia",
-  "badge": "TOP 60 do BRASIL",
+  "categories": [
+    "alta-gastronomia",
+    "cozinha-mineira"
+  ],
+  "badge": "TOP 26 do BRASIL",
   "address": "Av. Olegário Maciel, 742 - Loja 2161 (Mercado Novo) - Centro, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9202732,
@@ -32,9 +35,12 @@
     ]
   },
   "photos": [
-    "/restaurants/cozinha-tupis/1.jpg",
-    "/restaurants/cozinha-tupis/2.jpg",
-    "/restaurants/cozinha-tupis/3.jpg",
-    "/restaurants/cozinha-tupis/4.jpg"
-  ]
+    "/restaurants/cozinha-tupis/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/cozinha-tupis/1.jpg": {
+      "x": 51,
+      "y": 0
+    }
+  }
 }

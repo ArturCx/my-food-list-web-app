@@ -8,21 +8,27 @@ import { RestaurantDetails } from "@/components/restaurant/details";
 import { cn } from "@/lib/utils";
 import type { Category, Restaurant, RestaurantPin } from "@/lib/schema";
 
+/** Sem seleção mostra tudo; com seleção, mostra só quem tem TODAS as categorias marcadas. */
+export function matchesCategories(r: Restaurant, selected: Set<Category>) {
+  for (const c of selected) if (!r.categories.includes(c)) return false;
+  return true;
+}
+
 const LIST_W = 400;
 const PANEL_W = 420;
 const GUTTER = 28;
 
-export function Explorer({ restaurants }: { restaurants: Restaurant[] }) {
+export function Explorer({ restaurants, editable = false }: { restaurants: Restaurant[]; editable?: boolean }) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [category, setCategory] = useState<Category | null>(null);
+  const [categories, setCategories] = useState<Set<Category>>(() => new Set());
   const [listOpen, setListOpen] = useState(false); // só mobile
 
   const pins = useMemo<RestaurantPin[]>(
     () =>
       restaurants
-        .filter((r) => r.coordinates && (!category || r.category === category))
-        .map((r) => ({ slug: r.slug, name: r.name, category: r.category, badge: r.badge, coordinates: r.coordinates! })),
-    [restaurants, category],
+        .filter((r) => r.coordinates && matchesCategories(r, categories))
+        .map((r) => ({ slug: r.slug, name: r.name, categories: r.categories, badge: r.badge, coordinates: r.coordinates! })),
+    [restaurants, categories],
   );
 
   const selected = restaurants.find((r) => r.slug === selectedSlug) ?? null;
@@ -64,8 +70,8 @@ export function Explorer({ restaurants }: { restaurants: Restaurant[] }) {
           restaurants={restaurants}
           selectedSlug={selectedSlug}
           onSelect={onSelect}
-          category={category}
-          onCategoryChange={setCategory}
+          categories={categories}
+          onCategoriesChange={setCategories}
           pinCount={pins.length}
         />
       </aside>
@@ -75,7 +81,7 @@ export function Explorer({ restaurants }: { restaurants: Restaurant[] }) {
         type="button"
         onClick={() => setListOpen((v) => !v)}
         aria-expanded={listOpen}
-        className="glass absolute bottom-5 left-1/2 z-20 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-sm font-bold md:hidden"
+        className="glass absolute bottom-5 left-1/2 z-20 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-sm font-bold transition-transform active:scale-95 md:hidden"
       >
         {listOpen ? <X className="size-4" /> : <List className="size-4" />}
         {listOpen ? "Fechar" : `${restaurants.length} lugares`}
@@ -93,7 +99,7 @@ export function Explorer({ restaurants }: { restaurants: Restaurant[] }) {
             : "pointer-events-none translate-y-[calc(100%+12px)] opacity-0 md:translate-x-6 md:translate-y-0",
         )}
       >
-        {selected && <RestaurantDetails r={selected} onClose={close} />}
+        {selected && <RestaurantDetails key={selected.slug} r={selected} onClose={close} editable={editable} />}
       </section>
     </div>
   );

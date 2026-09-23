@@ -2,8 +2,11 @@
   "slug": "birosca",
   "name": "Birosca",
   "description": "Cozinha mineira autoral e afetiva da chef Bruna Martins; restaurante e deli o dia todo",
-  "category": "alta-gastronomia",
-  "badge": "TOP 42 do BRASIL",
+  "categories": [
+    "cozinha-mineira",
+    "alta-gastronomia"
+  ],
+  "badge": "TOP 36 do BRASIL",
   "address": "Rua São Paulo, 2003 - Lourdes, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9267228,

@@ -2,7 +2,10 @@
   "slug": "copa-cozinha",
   "name": "Copa Cozinha",
   "description": "Café da manhã e brunch mineiros: quitandas, pão de queijo recheado e bolos",
-  "category": "cafe",
+  "categories": [
+    "cafe",
+    "cozinha-mineira"
+  ],
   "address": "Av. Francisco Sales, 199 - Floresta, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.917038,
@@ -34,8 +37,6 @@
     ]
   },
   "photos": [
-    "/restaurants/copa-cozinha/1.jpg",
-    "/restaurants/copa-cozinha/2.jpg",
-    "/restaurants/copa-cozinha/3.jpg"
+    "/restaurants/copa-cozinha/1.jpg"
   ]
 }

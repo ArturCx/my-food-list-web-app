@@ -14,7 +14,9 @@
     "prebuild": "pnpm copy-worker",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "optimize-photos": "node scripts/optimize-photos.mjs",
-    "add-photo": "node scripts/add-photo.mjs"
+    "add-photo": "node scripts/add-photo.mjs",
+    "apply-photos": "node scripts/apply-photo-list.mjs",
+    "upload-photos": "node scripts/upload-photos.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -31,11 +33,13 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1137.0",
     "@tailwindcss/postcss": "^4",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^18.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "sharp": "^0.35.4",
@@ -45,6 +49,6 @@
   },
   "packageManager": "pnpm@12.5.1",
   "engines": {
-    "node": "24.x"
+    "node": ">=22 <25"
   }
 }

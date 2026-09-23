@@ -1,16 +1,32 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { GeolocateControl, Map as MLMap, Marker, NavigationControl, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import {
+  GeolocateControl,
+  Map as MLMap,
+  NavigationControl,
+  setWorkerUrl,
+  type GeoJSONSource,
+  type MapMouseEvent,
+} from "maplibre-gl";
 import { CATEGORY_COLOR } from "@/lib/categories";
-import type { RestaurantPin } from "@/lib/schema";
+import type { Category, RestaurantPin } from "@/lib/schema";
 
 /** OpenFreeMap: gratuito, sem chave, sem limite. "bright" tem cor; o ruído é escondido abaixo. */
 const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
 /** Centro padrão: Belo Horizonte. */
 const DEFAULT_CENTER: [number, number] = [-43.9352, -19.9245];
 const DEFAULT_ZOOM = 11.5;
+/** Inclinação padrão da câmera (0 = vista de cima, 60 = máximo). */
+const DEFAULT_PITCH = 55;
+
 const SOURCE = "restaurants";
+const L_CLUSTER_HALO = "restaurants-cluster-halo";
+const L_CLUSTER = "restaurants-cluster";
+const L_CLUSTER_COUNT = "restaurants-cluster-count";
+const L_PINS = "restaurants-pins";
+const L_SELECTED_HALO = "restaurants-selected-halo";
+const ACTIVE_COLOR = "#f43f5e";
 
 /** Camadas do estilo que só adicionam ruído para o nosso caso (prefixos de id). */
 const HIDDEN_LAYER_PREFIXES = [
@@ -53,6 +69,43 @@ function recolorRoads(m: MLMap) {
   if (m.getLayer("highway-area")) m.setPaintProperty("highway-area", "fill-color", ROAD_COLORS.minor);
 }
 
+/**
+ * Pins são imagens registradas no mapa e desenhados pelo WebGL no mesmo frame
+ * que os tiles. Marcadores HTML ficariam sempre um frame atrasados.
+ */
+const PIN_W = 28;
+const PIN_H = 37;
+const PIN_SCALE = 2; // renderiza em 2x para ficar nítido em telas retina
+
+function pinSvg(fill: string) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_W * PIN_SCALE}" height="${PIN_H * PIN_SCALE}" viewBox="0 0 24 32">
+    <path d="M12 31c-1.2-8.5-11-13.4-11-20A11 11 0 1 1 23 11c0 6.6-9.8 11.5-11 20z" fill="${fill}" stroke="#fff" stroke-width="2"/>
+    <circle cx="12" cy="11" r="4" fill="#fff"/>
+  </svg>`;
+}
+
+function loadImage(svg: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image(PIN_W * PIN_SCALE, PIN_H * PIN_SCALE);
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  });
+}
+
+async function registerPinImages(m: MLMap) {
+  const entries: [string, string][] = [
+    ...(Object.entries(CATEGORY_COLOR) as [Category, string][]).map(([c, color]): [string, string] => [`pin-${c}`, color]),
+    ["pin-active", ACTIVE_COLOR],
+  ];
+  await Promise.all(
+    entries.map(async ([name, color]) => {
+      const img = await loadImage(pinSvg(color));
+      if (!m.hasImage(name)) m.addImage(name, img, { pixelRatio: PIN_SCALE });
+    }),
+  );
+}
+
 type Props = {
   pins: RestaurantPin[];
   selectedSlug: string | null;
@@ -61,88 +114,128 @@ type Props = {
   padding?: { left: number; right: number };
 };
 
-type PinProps = { slug: string; name: string; category: string };
+/** `category` é a primeira do lugar: define a cor do pin. */
+type PinProps = { slug: string; name: string; category: string; selected: boolean };
 
-function toGeoJSON(pins: RestaurantPin[]): GeoJSON.FeatureCollection<GeoJSON.Point, PinProps> {
+function toGeoJSON(pins: RestaurantPin[], selectedSlug: string | null): GeoJSON.FeatureCollection<GeoJSON.Point, PinProps> {
   return {
     type: "FeatureCollection",
     features: pins.map((p) => ({
       type: "Feature",
       geometry: { type: "Point", coordinates: [p.coordinates.lng, p.coordinates.lat] },
-      properties: { slug: p.slug, name: p.name, category: p.category },
+      properties: { slug: p.slug, name: p.name, category: p.categories[0], selected: p.slug === selectedSlug },
     })),
   };
+}
+
+function addLayers(m: MLMap) {
+  m.addSource(SOURCE, {
+    type: "geojson",
+    data: toGeoJSON([], null),
+    cluster: true,
+    clusterRadius: 44,
+    clusterMaxZoom: 15,
+  });
+
+  // Clusters: bolha branca translúcida com halo suave e contador.
+  m.addLayer({
+    id: L_CLUSTER_HALO,
+    type: "circle",
+    source: SOURCE,
+    filter: ["has", "point_count"],
+    paint: { "circle-radius": 27, "circle-color": "rgba(15,23,42,0.12)", "circle-blur": 0.6 },
+  });
+  m.addLayer({
+    id: L_CLUSTER,
+    type: "circle",
+    source: SOURCE,
+    filter: ["has", "point_count"],
+    paint: {
+      "circle-radius": 22,
+      "circle-color": "rgba(255,255,255,0.88)",
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "rgba(255,255,255,0.95)",
+    },
+  });
+  m.addLayer({
+    id: L_CLUSTER_COUNT,
+    type: "symbol",
+    source: SOURCE,
+    filter: ["has", "point_count"],
+    layout: {
+      "text-field": ["get", "point_count_abbreviated"],
+      "text-font": ["Noto Sans Bold"],
+      "text-size": 14,
+      "text-allow-overlap": true,
+    },
+    paint: { "text-color": "#0f172a" },
+  });
+
+  // Halo pulsante sob o pin selecionado (raio animado em animateHalo).
+  m.addLayer({
+    id: L_SELECTED_HALO,
+    type: "circle",
+    source: SOURCE,
+    filter: ["all", ["!", ["has", "point_count"]], ["get", "selected"]],
+    paint: {
+      "circle-radius": 14,
+      "circle-color": ACTIVE_COLOR,
+      "circle-opacity": 0.25,
+      "circle-blur": 0.4,
+      "circle-pitch-alignment": "map",
+    },
+  });
+
+  // Pins: ícone por categoria, o selecionado em rosa, bem maior e por cima.
+  m.addLayer({
+    id: L_PINS,
+    type: "symbol",
+    source: SOURCE,
+    filter: ["!", ["has", "point_count"]],
+    layout: {
+      "icon-image": ["case", ["get", "selected"], "pin-active", ["concat", "pin-", ["get", "category"]]],
+      "icon-size": ["case", ["get", "selected"], 1.75, 1],
+      "icon-anchor": "bottom",
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
+      "symbol-sort-key": ["case", ["get", "selected"], 1, 0],
+    },
+  });
+}
+
+/** Pulso do halo do pin selecionado. Retorna a função de parar. */
+function animateHalo(m: MLMap) {
+  let raf = 0;
+  const start = performance.now();
+  const tick = (now: number) => {
+    const t = ((now - start) % 1800) / 1800; // 0 → 1 a cada 1,8s
+    if (m.getLayer(L_SELECTED_HALO)) {
+      m.setPaintProperty(L_SELECTED_HALO, "circle-radius", 10 + t * 26);
+      m.setPaintProperty(L_SELECTED_HALO, "circle-opacity", 0.35 * (1 - t));
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(raf);
 }
 
 export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
-  const markers = useRef<Map<string, Marker>>(new Map());
   const loaded = useRef(false);
+  const stopHalo = useRef<(() => void) | null>(null);
 
-  // Refs para os handlers não ficarem presos a closures antigas.
-  const selectedRef = useRef(selectedSlug);
+  // Refs para os handlers do mapa não ficarem presos a closures antigas.
   const onSelectRef = useRef(onSelect);
+  const dataRef = useRef({ pins, selectedSlug });
   useEffect(() => {
-    selectedRef.current = selectedSlug;
     onSelectRef.current = onSelect;
-  }, [selectedSlug, onSelect]);
-
-  /** Sincroniza marcadores HTML com as features visíveis (pins + clusters). */
-  const syncMarkers = () => {
-    const m = map.current;
-    if (!m || !loaded.current || !m.getSource(SOURCE)) return;
-    const features = m.querySourceFeatures(SOURCE);
-    const seen = new Set<string>();
-
-    for (const f of features) {
-      const [lng, lat] = (f.geometry as GeoJSON.Point).coordinates;
-      const props = f.properties as { cluster?: boolean; cluster_id?: number; point_count?: number } & Partial<PinProps>;
-      const key = props.cluster ? `c${props.cluster_id}` : `p${props.slug}`;
-      seen.add(key);
-
-      let marker = markers.current.get(key);
-      if (!marker) {
-        const el = document.createElement("div");
-        if (props.cluster) {
-          el.className = "mfl-cluster";
-          el.textContent = String(props.point_count);
-          el.onclick = async () => {
-            const src = m.getSource(SOURCE) as GeoJSONSource;
-            const zoom = await src.getClusterExpansionZoom(props.cluster_id!);
-            m.easeTo({ center: [lng, lat], zoom, duration: 400 });
-          };
-        } else {
-          el.className = "mfl-pin";
-          el.style.setProperty("--pin", CATEGORY_COLOR[props.category as keyof typeof CATEGORY_COLOR]);
-          el.title = props.name ?? "";
-          el.setAttribute("role", "button");
-          el.setAttribute("aria-label", props.name ?? "");
-          el.onclick = (e) => {
-            e.stopPropagation();
-            onSelectRef.current(props.slug!);
-          };
-        }
-        marker = new Marker({ element: el }).setLngLat([lng, lat]).addTo(m);
-        markers.current.set(key, marker);
-      }
-      if (!props.cluster) {
-        marker.getElement().dataset.active = String(props.slug === selectedRef.current);
-      }
-    }
-
-    for (const [key, marker] of markers.current) {
-      if (!seen.has(key)) {
-        marker.remove();
-        markers.current.delete(key);
-      }
-    }
-  };
+    dataRef.current = { pins, selectedSlug };
+  }, [onSelect, pins, selectedSlug]);
 
   // Init
   useEffect(() => {
     if (!container.current || map.current) return;
-    const markerStore = markers.current;
     // Worker servido de public/ (ver scripts/copy-maplibre-worker.mjs).
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
     const m = new MLMap({
@@ -150,6 +243,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
       style: STYLE_URL,
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
+      pitch: DEFAULT_PITCH,
       attributionControl: { compact: true },
     });
     m.addControl(new NavigationControl({ showCompass: false }), "bottom-right");
@@ -162,68 +256,71 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, padding }:
       trackUserLocation: false,
       showUserLocation: true,
       showAccuracyCircle: true,
-      fitBoundsOptions: { maxZoom: 14 },
+      fitBoundsOptions: { maxZoom: 14, pitch: DEFAULT_PITCH },
     });
     m.addControl(geolocate, "bottom-right");
     map.current = m;
 
-    m.on("load", () => {
+    m.on("load", async () => {
       for (const layer of m.getStyle().layers ?? []) {
         if (HIDDEN_LAYER_PREFIXES.some((p) => layer.id.startsWith(p))) {
           m.setLayoutProperty(layer.id, "visibility", "none");
         }
       }
       recolorRoads(m);
-      m.addSource(SOURCE, {
-        type: "geojson",
-        data: toGeoJSON([]),
-        cluster: true,
-        clusterRadius: 44,
-        clusterMaxZoom: 15,
-      });
-      // Camada invisível só para o source ser consultável via querySourceFeatures.
-      m.addLayer({ id: `${SOURCE}-anchor`, type: "circle", source: SOURCE, paint: { "circle-opacity": 0, "circle-radius": 0 } });
+      await registerPinImages(m);
+      if (!map.current) return; // desmontou enquanto carregava
+      addLayers(m);
+      stopHalo.current = animateHalo(m);
       loaded.current = true;
-      (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins));
-      syncMarkers();
+      const { pins, selectedSlug } = dataRef.current;
+      (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins, selectedSlug));
       // Já abre centralizado em quem está usando.
       geolocate.trigger();
     });
-    m.on("render", syncMarkers);
-    m.on("moveend", syncMarkers);
+
+    // Interação
+    m.on("click", L_PINS, (e: MapMouseEvent) => {
+      const f = m.queryRenderedFeatures(e.point, { layers: [L_PINS] })[0];
+      const slug = f?.properties?.slug as string | undefined;
+      if (slug) onSelectRef.current(slug);
+    });
+    m.on("click", L_CLUSTER, async (e: MapMouseEvent) => {
+      const f = m.queryRenderedFeatures(e.point, { layers: [L_CLUSTER] })[0];
+      if (!f) return;
+      const src = m.getSource(SOURCE) as GeoJSONSource;
+      const zoom = await src.getClusterExpansionZoom(f.properties.cluster_id as number);
+      m.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom, duration: 400 });
+    });
+    for (const layer of [L_PINS, L_CLUSTER]) {
+      m.on("mouseenter", layer, () => { m.getCanvas().style.cursor = "pointer"; });
+      m.on("mouseleave", layer, () => { m.getCanvas().style.cursor = ""; });
+    }
 
     return () => {
+      stopHalo.current?.();
       m.remove();
       map.current = null;
       loaded.current = false;
-      markerStore.clear();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Dados
+  // Dados e seleção: 28 pontos, reenviar o GeoJSON inteiro é barato.
   useEffect(() => {
     const m = map.current;
     if (!m || !loaded.current) return;
-    (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins));
-    // Clusters mudam de id quando os dados mudam: limpa e recria.
-    for (const marker of markers.current.values()) marker.remove();
-    markers.current.clear();
-    syncMarkers();
-  }, [pins]);
+    (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins, selectedSlug));
+  }, [pins, selectedSlug]);
 
-  // Seleção: destaca o pin e voa até ele
+  // Voa até o selecionado
   useEffect(() => {
     const m = map.current;
-    if (!m) return;
-    for (const [key, marker] of markers.current) {
-      if (key.startsWith("p")) marker.getElement().dataset.active = String(key === `p${selectedSlug}`);
-    }
     const pin = pins.find((p) => p.slug === selectedSlug);
-    if (!pin) return;
+    if (!m || !pin) return;
     m.flyTo({
       center: [pin.coordinates.lng, pin.coordinates.lat],
       zoom: Math.max(m.getZoom(), 15),
+      pitch: Math.max(m.getPitch(), DEFAULT_PITCH),
       padding: { left: padding?.left ?? 0, right: padding?.right ?? 0, top: 0, bottom: 0 },
       duration: 700,
     });

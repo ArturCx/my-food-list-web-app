@@ -2,7 +2,9 @@
   "slug": "lifebox",
   "name": "LifeBox Burger",
   "description": "Hamburgueria de três andares aberta até a madrugada: burgers, steaks e shakes",
-  "category": "hamburgueria",
+  "categories": [
+    "hamburgueria"
+  ],
   "address": "R. Gonçalves Dias, 896 - Funcionários, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9336599,
@@ -35,7 +37,12 @@
     ]
   },
   "photos": [
-    "/restaurants/lifebox/1.jpg",
-    "/restaurants/lifebox/2.jpg"
-  ]
+    "/restaurants/lifebox/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/lifebox/1.jpg": {
+      "x": 62,
+      "y": 19
+    }
+  }
 }

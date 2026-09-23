@@ -2,7 +2,10 @@
   "slug": "terra-media-experience",
   "name": "Terra Média Experience",
   "description": "Taverna medieval inspirada em O Senhor dos Anéis: burgers e chope em canecas de madeira",
-  "category": "hamburgueria",
+  "categories": [
+    "hamburgueria",
+    "bar"
+  ],
   "address": "Av. Francisco Sá, 355 - Prado, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9257772,
@@ -28,8 +31,6 @@
     ]
   },
   "photos": [
-    "/restaurants/terra-media-experience/1.jpg",
-    "/restaurants/terra-media-experience/2.jpg",
-    "/restaurants/terra-media-experience/3.jpg"
+    "/restaurants/terra-media-experience/1.jpg"
   ]
 }

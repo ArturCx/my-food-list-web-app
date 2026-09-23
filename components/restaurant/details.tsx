@@ -1,81 +1,83 @@
-import { ExternalLink, AtSign, MapPin, UtensilsCrossed, X } from "lucide-react";
-import { CATEGORY_GRADIENT } from "@/lib/categories";
+import { ExternalLink, AtSign, MapPin, Clock, UtensilsCrossed, X, Award } from "lucide-react";
+import { CATEGORY_COLOR, CATEGORY_GRADIENT } from "@/lib/categories";
+import { CATEGORY_ICON } from "@/lib/category-icons";
 import { CATEGORIES, type Restaurant } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { Hours } from "./hours";
+import { PhotoGallery } from "./photo-gallery";
 import { InstagramEmbed } from "./instagram-embed";
 
-type Props = { r: Restaurant; onClose?: () => void };
+type Props = { r: Restaurant; onClose?: () => void; editable?: boolean };
 
-export function RestaurantDetails({ r, onClose }: Props) {
+export function RestaurantDetails({ r, onClose, editable }: Props) {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.address)}`;
+  const accent = CATEGORY_COLOR[r.categories[0]];
 
   return (
-    <div className="flex flex-col gap-4 p-5">
-      <div className="flex items-center justify-between gap-3">
-        {r.badge ? (
-          <span className="rounded-full bg-rose-500 px-2.5 py-1.5 text-[11px] font-bold text-white">{r.badge}</span>
-        ) : (
-          <span className="rounded-full bg-white/70 px-2.5 py-1.5 text-[11px] font-bold">{CATEGORIES[r.category]}</span>
+    // key={r.slug} no pai faz o conteúdo reanimar a cada restaurante.
+    <div className="flex flex-col gap-4 p-4 pb-6">
+      {/* Foto com badge e botão de fechar sobrepostos */}
+      <div className="animate-in fade-in zoom-in-95 relative duration-300">
+        <PhotoGallery key={r.slug} slug={r.slug} editable={editable} name={r.name} photos={r.photos} focus={r.photoFocus} fallback={CATEGORY_GRADIENT[r.categories[0]]} />
+        {r.badge && !editable && (
+          <span className="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-rose-500 px-2.5 py-1.5 text-[11px] font-bold text-white shadow-[0_6px_16px_rgba(244,63,94,0.45)]">
+            <Award className="size-3.5" /> {r.badge}
+          </span>
         )}
         {onClose && (
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="glass-soft flex size-11 items-center justify-center rounded-full hover:bg-white/80"
+            className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full bg-white/85 shadow-md backdrop-blur transition-transform hover:scale-105 active:scale-95"
           >
             <X className="size-4" />
           </button>
         )}
       </div>
 
-      <div>
-        <h2 className="text-[34px] font-extrabold leading-none tracking-tight">{r.name}</h2>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          {CATEGORIES[r.category]} · {neighborhood(r.address)}
+      <div className="animate-in fade-in slide-in-from-bottom-2 px-1 duration-300 [animation-delay:60ms]">
+        <h2 className="text-[30px] leading-none font-extrabold tracking-tight">{r.name}</h2>
+        <p className="mt-1.5 flex items-center gap-1 text-sm text-muted-foreground">
+          <MapPin className="size-3.5" /> {neighborhood(r.address)}
         </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {r.categories.map((c) => {
+            const Icon = CATEGORY_ICON[c];
+            return (
+              <span key={c} className="flex items-center gap-1.5 rounded-full bg-white/70 py-1 pr-2.5 pl-1.5 text-[11px] font-bold">
+                <span className="flex size-4 items-center justify-center rounded-full text-white" style={{ background: CATEGORY_COLOR[c] }}>
+                  <Icon className="size-2.5" strokeWidth={2.5} />
+                </span>
+                {CATEGORIES[c]}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
-      <div
-        className="mfl-scroll flex snap-x gap-2 overflow-x-auto rounded-[20px]"
-        style={{ backgroundImage: r.photos.length ? undefined : CATEGORY_GRADIENT[r.category] }}
-      >
-        {r.photos.length > 0 ? (
-          r.photos.map((src) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={src}
-              src={src}
-              alt={r.name}
-              loading="lazy"
-              className="h-48 w-full shrink-0 snap-start rounded-[20px] object-cover"
-            />
-          ))
-        ) : (
-          <div className="flex h-48 w-full items-end p-3">
-            <span className="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-bold">Sem foto ainda</span>
-          </div>
-        )}
-      </div>
+      <p className="animate-in fade-in slide-in-from-bottom-2 px-1 text-sm leading-relaxed duration-300 [animation-delay:120ms]">{r.description}</p>
 
-      <p className="text-sm leading-relaxed">{r.description}</p>
-
-      <div className="grid grid-cols-2 gap-2.5">
-        <a href={mapsUrl} target="_blank" rel="noreferrer" className="glass-soft rounded-2xl p-3 hover:bg-white/80">
-          <Label>Endereço</Label>
-          <p className="flex items-start gap-1.5 text-xs leading-relaxed">
-            <MapPin className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
-            {r.address}
-          </p>
+      <div className="animate-in fade-in slide-in-from-bottom-2 grid grid-cols-2 gap-2.5 duration-300 [animation-delay:180ms]">
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="glass-soft group rounded-2xl p-3 transition-[background-color,transform] hover:bg-white/85 active:scale-[0.98]"
+        >
+          <Label icon={<MapPin className="size-3" />}>Endereço</Label>
+          <p className="text-xs leading-relaxed">{r.address}</p>
+          <span className="mt-1 inline-block text-[11px] font-bold transition-colors group-hover:underline" style={{ color: accent }}>
+            Abrir no Maps
+          </span>
         </a>
         <div className="glass-soft rounded-2xl p-3">
-          <Label>Horário</Label>
+          <Label icon={<Clock className="size-3" />}>Horário</Label>
           <Hours hours={r.hours} compact />
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="animate-in fade-in slide-in-from-bottom-2 flex flex-wrap gap-2 duration-300 [animation-delay:240ms]">
         {r.website && (
           <Action href={r.website} primary>
             <ExternalLink /> Site
@@ -94,7 +96,7 @@ export function RestaurantDetails({ r, onClose }: Props) {
       </div>
 
       {r.instagramEmbed && (
-        <div className="overflow-hidden rounded-[20px] bg-white/50">
+        <div className="animate-in fade-in overflow-hidden rounded-[20px] bg-white/50 duration-300 [animation-delay:300ms]">
           <InstagramEmbed url={r.instagramEmbed} />
         </div>
       )}
@@ -102,8 +104,12 @@ export function RestaurantDetails({ r, onClose }: Props) {
   );
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-  return <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{children}</p>;
+function Label({ icon, children }: { icon?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <p className="mb-1 flex items-center gap-1 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+      {icon} {children}
+    </p>
+  );
 }
 
 function Action({ href, primary, children }: { href: string; primary?: boolean; children: React.ReactNode }) {
@@ -113,8 +119,11 @@ function Action({ href, primary, children }: { href: string; primary?: boolean; 
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 rounded-[14px] px-4 text-[13px] font-bold transition-colors [&_svg]:size-4",
-        primary ? "bg-primary text-primary-foreground hover:bg-primary/90" : "glass-soft hover:bg-white/80",
+        "inline-flex min-h-11 items-center gap-2 rounded-[14px] px-4 text-[13px] font-bold [&_svg]:size-4",
+        "transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
+        primary
+          ? "bg-primary text-primary-foreground shadow-[0_8px_20px_rgba(15,23,42,0.25)] hover:bg-primary/90"
+          : "glass-soft hover:bg-white/85 hover:shadow-[0_6px_16px_rgba(15,23,42,0.1)]",
       )}
     >
       {children}

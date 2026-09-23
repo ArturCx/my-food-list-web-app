@@ -2,7 +2,9 @@
   "slug": "cafe-bonjour",
   "name": "Café Bonjour",
   "description": "Cafeteria em casa antiga de Lourdes: cafés, brunch, croques e panquecas",
-  "category": "cafe",
+  "categories": [
+    "cafe"
+  ],
   "address": "Rua Curitiba, 1800 - Lourdes, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9301886,
@@ -30,8 +32,12 @@
     ]
   },
   "photos": [
-    "/restaurants/cafe-bonjour/1.jpg",
-    "/restaurants/cafe-bonjour/2.jpg",
-    "/restaurants/cafe-bonjour/3.jpg"
-  ]
+    "/restaurants/cafe-bonjour/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/cafe-bonjour/1.jpg": {
+      "x": 38,
+      "y": 66
+    }
+  }
 }

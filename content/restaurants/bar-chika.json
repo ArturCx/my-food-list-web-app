@@ -2,7 +2,9 @@
   "slug": "bar-chika",
   "name": "Bar Chika",
   "description": "Bar secreto de alta coquetelaria inspirado nos bares japoneses; reserva pelo Instagram",
-  "category": "bar",
+  "categories": [
+    "bar"
+  ],
   "address": "Rua Sergipe, 629 - Savassi, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9322398,
@@ -10,8 +12,6 @@
   },
   "instagram": "barchika.jp",
   "photos": [
-    "/restaurants/bar-chika/1.jpg",
-    "/restaurants/bar-chika/2.jpg",
-    "/restaurants/bar-chika/3.jpg"
+    "/restaurants/bar-chika/1.jpg"
   ]
 }

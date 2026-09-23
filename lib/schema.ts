@@ -1,12 +1,16 @@
 import { z } from "zod";
 
 export const CATEGORIES = {
-  "alta-gastronomia": "Alta gastronomia",
-  restaurante: "Restaurante",
+  pizzaria: "Pizzaria",
+  hamburgueria: "Hamburgueria",
   bar: "Bar",
   cervejaria: "Cervejaria",
-  hamburgueria: "Hamburgueria",
-  "wine-bar": "Wine bar",
+  "cozinha-brasileira": "Cozinha Brasileira",
+  "cozinha-mineira": "Cozinha Mineira",
+  "alta-gastronomia": "Alta Gastronomia",
+  "cozinha-espanhola": "Cozinha Espanhola",
+  "cozinha-asiatica": "Cozinha Asiática",
+  "cozinha-alema": "Cozinha Alemã",
   cafe: "Café",
 } as const;
 
@@ -33,7 +37,8 @@ export const restaurantSchema = z
     slug: z.string().regex(/^[a-z0-9-]+$/),
     name: z.string().min(1),
     description: z.string().min(1),
-    category: z.enum(Object.keys(CATEGORIES) as [Category, ...Category[]]),
+    /** Um lugar pode ter várias categorias; a primeira define a cor do pin. */
+    categories: z.array(z.enum(Object.keys(CATEGORIES) as [Category, ...Category[]])).min(1),
     badge: z.string().optional(),
     address: z.string().min(1),
     coordinates: z.object({ lat: z.number(), lng: z.number() }).nullable(),
@@ -44,6 +49,8 @@ export const restaurantSchema = z
     menuUrl: z.url().nullable().optional(),
     hours: hoursSchema.nullable().optional(),
     photos: z.array(z.string()).default([]),
+    /** Ponto de foco por foto (object-position em %), chave = caminho da foto. */
+    photoFocus: z.record(z.string(), z.object({ x: z.number().min(0).max(100), y: z.number().min(0).max(100) })).optional(),
   })
   .strict();
 
@@ -52,5 +59,5 @@ export type Restaurant = z.infer<typeof restaurantSchema>;
 /** Versão leve enviada ao mapa. */
 export type RestaurantPin = Pick<
   Restaurant,
-  "slug" | "name" | "category" | "badge"
+  "slug" | "name" | "categories" | "badge"
 > & { coordinates: NonNullable<Restaurant["coordinates"]> };

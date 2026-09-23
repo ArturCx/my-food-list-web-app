@@ -4,7 +4,7 @@
  *
  * Uso: node scripts/import-research.mjs <resultados.json>
  *
- * Campos aceitos por item: address, website, instagram, description, badge,
+ * Campos aceitos por item: categories (array), address, website, instagram, description, badge,
  * hours, menuUrl, photos (URLs). Campos null/ausentes são ignorados, exceto
  * badge:null que remove o badge. Se o endereço mudar, coordinates volta a
  * null para o `pnpm geocode` recalcular. Slugs que ainda não existem viram
@@ -48,16 +48,17 @@ for (const item of results) {
     console.warn(`✖ ${item.slug}: fechado, não criado — ${item.statusNote ?? ""}`);
     continue;
   }
-  if (isNew && !item.category) {
-    console.warn(`✖ ${item.slug}: novo sem category, pulando`);
+  const cats = item.categories ?? (item.category ? [item.category] : null);
+  if (isNew && !cats) {
+    console.warn(`✖ ${item.slug}: novo sem categories, pulando`);
     continue;
   }
   const r = isNew
-    ? { slug: item.slug, name: item.name, description: "", category: item.category, address: "", coordinates: null, photos: [] }
+    ? { slug: item.slug, name: item.name, description: "", categories: cats, address: "", coordinates: null, photos: [] }
     : JSON.parse(fs.readFileSync(file, "utf8"));
   const changes = isNew ? ["novo"] : [];
   if (isNew) { r.address = item.address ?? ""; r.description = item.description ?? ""; }
-  if (item.category && item.category !== r.category) { r.category = item.category; changes.push("category"); }
+  if (cats && JSON.stringify(cats) !== JSON.stringify(r.categories)) { r.categories = cats; changes.push("categories"); }
 
   if (item.status && item.status !== "open") {
     console.warn(`! ${r.name}: status "${item.status}" — ${item.statusNote ?? ""}`);
@@ -95,7 +96,7 @@ for (const item of results) {
 
   // Ordem estável das chaves para diffs limpos.
   const ordered = {};
-  for (const k of ["slug","name","description","category","badge","address","coordinates","website","instagram","instagramEmbed","menuUrl","hours","photos"]) {
+  for (const k of ["slug","name","description","categories","badge","address","coordinates","website","instagram","instagramEmbed","menuUrl","hours","photos","photoFocus"]) {
     if (k in r) ordered[k] = r[k];
   }
   fs.writeFileSync(file, JSON.stringify(ordered, null, 2) + "\n");

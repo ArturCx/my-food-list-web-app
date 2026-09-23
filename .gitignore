@@ -42,3 +42,6 @@ next-env.d.ts
 
 # gerado por scripts/copy-maplibre-worker.mjs
 /public/maplibre/
+
+# Fotos ficam no Cloudflare R2 (ver scripts/upload-photos.mjs)
+/public/restaurants/

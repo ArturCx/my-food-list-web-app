@@ -2,8 +2,10 @@
   "slug": "glouton",
   "name": "Glouton",
   "description": "Alta gastronomia do chef Leo Paixão: técnica francesa com ingredientes mineiros",
-  "category": "alta-gastronomia",
-  "badge": "TOP 18 do BRASIL",
+  "categories": [
+    "alta-gastronomia"
+  ],
+  "badge": "TOP 24 do BRASIL",
   "address": "Rua Bárbara Heliodora, 71 - Lourdes, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9314906,
@@ -33,8 +35,6 @@
     ]
   },
   "photos": [
-    "/restaurants/glouton/1.jpg",
-    "/restaurants/glouton/2.jpg",
-    "/restaurants/glouton/3.jpg"
+    "/restaurants/glouton/1.jpg"
   ]
 }

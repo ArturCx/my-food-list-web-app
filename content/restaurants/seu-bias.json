@@ -2,7 +2,10 @@
   "slug": "seu-bias",
   "name": "Seu Bias",
   "description": "Bar-restaurante em casarão tombado de Lourdes: cozinha brasileira, drinks e música",
-  "category": "restaurante",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
   "address": "Avenida Bias Fortes, 161 - Lourdes, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9298088,
@@ -31,8 +34,12 @@
     ]
   },
   "photos": [
-    "/restaurants/seu-bias/1.jpg",
-    "/restaurants/seu-bias/2.jpg",
-    "/restaurants/seu-bias/3.jpg"
-  ]
+    "/restaurants/seu-bias/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/seu-bias/1.jpg": {
+      "x": 46,
+      "y": 85
+    }
+  }
 }

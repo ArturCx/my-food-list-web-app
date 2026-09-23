@@ -1,0 +1,41 @@
+{
+  "slug": "sakana",
+  "name": "Sakaná BNDNSK",
+  "description": "Japonês desde 2007: sashimis, temakis e hand rolls, caipisakês e clima intimista",
+  "categories": [
+    "cozinha-asiatica",
+    "bar"
+  ],
+  "address": "Av. do Contorno, 7000 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9383492,
+    "lng": -43.9440338
+  },
+  "instagram": "sakana_bndnsk",
+  "hours": {
+    "mon": [
+      "19:00-00:00"
+    ],
+    "tue": [
+      "19:00-00:00"
+    ],
+    "wed": [
+      "19:00-00:00"
+    ],
+    "thu": [
+      "19:00-01:00"
+    ],
+    "fri": [
+      "19:00-01:00"
+    ],
+    "sat": [
+      "19:00-01:00"
+    ],
+    "sun": [
+      "19:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/sakana/1.jpg"
+  ]
+}

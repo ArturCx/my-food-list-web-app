@@ -2,7 +2,9 @@
   "slug": "fuga",
   "name": "Fuga",
   "description": "Bar de cozinha aberta: pratinhos, empanadas, conservas, embutidos e vermute da casa",
-  "category": "bar",
+  "categories": [
+    "bar"
+  ],
   "address": "Rua Outono, 486 - Cruzeiro, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9428825,
@@ -24,7 +26,12 @@
     ]
   },
   "photos": [
-    "/restaurants/fuga/1.jpg",
-    "/restaurants/fuga/2.jpg"
-  ]
+    "/restaurants/fuga/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/fuga/1.jpg": {
+      "x": 44,
+      "y": 49
+    }
+  }
 }

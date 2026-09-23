@@ -1,0 +1,56 @@
+{
+  "slug": "trintaeum",
+  "name": "Trintaeum",
+  "description": "Cozinha mineira contemporânea da chef Ana Gabi Costa: clássicos revisitados, vinhos e cachaças de MG",
+  "categories": [
+    "alta-gastronomia",
+    "cozinha-mineira"
+  ],
+  "badge": "TOP 20 do BRASIL",
+  "address": "Rua Professor Antônio Aleixo, 20 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.934325,
+    "lng": -43.940144
+  },
+  "website": "https://trintaeum.com.br/",
+  "instagram": "trintaeumrestaurante",
+  "menuUrl": "https://livemenu.app/menu/673508d1973ffde090123cd7",
+  "hours": {
+    "mon": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "tue": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "wed": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "thu": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "fri": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "sat": [
+      "12:00-15:30",
+      "19:00-23:00"
+    ],
+    "sun": [
+      "12:00-16:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/trintaeum/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/trintaeum/1.jpg": {
+      "x": 53,
+      "y": 59
+    }
+  }
+}

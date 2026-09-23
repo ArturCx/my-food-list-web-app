@@ -2,7 +2,9 @@
   "slug": "casa-azeite",
   "name": "Casa Azeite",
   "description": "Cozinha contemporânea com azeite artesanal, sazonal e afetiva, em casa colonial",
-  "category": "restaurante",
+  "categories": [
+    "cozinha-brasileira"
+  ],
   "address": "Rua José Pedro Drumond, 56 - Floresta, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9175138,
@@ -28,8 +30,12 @@
     ]
   },
   "photos": [
-    "/restaurants/casa-azeite/1.jpg",
-    "/restaurants/casa-azeite/2.jpg",
-    "/restaurants/casa-azeite/3.jpg"
-  ]
+    "/restaurants/casa-azeite/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/casa-azeite/1.jpg": {
+      "x": 0,
+      "y": 54
+    }
+  }
 }

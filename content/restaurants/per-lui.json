@@ -1,0 +1,40 @@
+{
+  "slug": "per-lui",
+  "name": "Per Lui",
+  "description": "Só menu degustação sazonal, de 8 a 10 etapas, que muda a cada três meses",
+  "categories": [
+    "alta-gastronomia",
+    "cozinha-brasileira"
+  ],
+  "badge": "TOP 47 do BRASIL",
+  "address": "Rua Muzambinho, 608 - Serra, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9449825,
+    "lng": -43.9203413
+  },
+  "website": "https://perluibh.com.br/",
+  "instagram": "perluibh",
+  "hours": {
+    "wed": [
+      "19:00-00:00"
+    ],
+    "thu": [
+      "19:00-00:00"
+    ],
+    "fri": [
+      "19:00-00:00"
+    ],
+    "sat": [
+      "19:00-00:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/per-lui/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/per-lui/1.jpg": {
+      "x": 47,
+      "y": 54
+    }
+  }
+}

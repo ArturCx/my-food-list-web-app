@@ -1,0 +1,47 @@
+{
+  "slug": "parallel",
+  "name": "Parallel",
+  "description": "Cozinha espanhola autêntica dos chefs Guilherme Furtado e Gabriella Guimarães, ex-Bodega 1900 e Enigma",
+  "categories": [
+    "cozinha-espanhola",
+    "alta-gastronomia"
+  ],
+  "badge": "TOP 32 do BRASIL",
+  "address": "Rua Santa Catarina, 1155 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9306168,
+    "lng": -43.9459143
+  },
+  "website": "https://parallelbh.com.br/",
+  "instagram": "parallel.bh",
+  "menuUrl": "https://parallelbh.com.br/cardapio/",
+  "hours": {
+    "tue": [
+      "18:00-23:00"
+    ],
+    "wed": [
+      "18:00-23:00"
+    ],
+    "thu": [
+      "18:00-23:00"
+    ],
+    "fri": [
+      "18:00-23:00"
+    ],
+    "sat": [
+      "12:30-23:00"
+    ],
+    "sun": [
+      "12:30-16:30"
+    ]
+  },
+  "photos": [
+    "/restaurants/parallel/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/parallel/1.jpg": {
+      "x": 44,
+      "y": 86
+    }
+  }
+}

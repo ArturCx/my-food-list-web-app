@@ -2,7 +2,10 @@
   "slug": "cervejaria-charada",
   "name": "Cervejaria Charada",
   "description": "Cervejaria artesanal com chope próprio, rock ao vivo e pet friendly",
-  "category": "cervejaria",
+  "categories": [
+    "cervejaria",
+    "bar"
+  ],
   "address": "Av. Fleming, 900 - Ouro Preto, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.8667853,
@@ -32,8 +35,12 @@
     ]
   },
   "photos": [
-    "/restaurants/cervejaria-charada/1.jpg",
-    "/restaurants/cervejaria-charada/2.jpg",
-    "/restaurants/cervejaria-charada/3.jpg"
-  ]
+    "/restaurants/cervejaria-charada/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/cervejaria-charada/1.jpg": {
+      "x": 58,
+      "y": 68
+    }
+  }
 }

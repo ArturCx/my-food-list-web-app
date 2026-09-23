@@ -2,7 +2,10 @@
   "slug": "the-house",
   "name": "The House Food & Fun",
   "description": "Gastrobar temático de filmes e séries (Friends, Harry Potter, GoT) com burgers e drinks",
-  "category": "bar",
+  "categories": [
+    "bar",
+    "hamburgueria"
+  ],
   "address": "Av. do Contorno, 5727 - Savassi, Belo Horizonte - MG",
   "coordinates": {
     "lat": -19.9393567,
@@ -35,6 +38,12 @@
     ]
   },
   "photos": [
-    "/restaurants/the-house/2.jpg"
-  ]
+    "/restaurants/the-house/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/the-house/1.jpg": {
+      "x": 36,
+      "y": 34
+    }
+  }
 }
