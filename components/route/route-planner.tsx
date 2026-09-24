@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Check, Footprints, LocateFixed, Route, Trash2, Loader2, Link2, ArrowDown, ChevronUp, ChevronDown, Sparkles, ListOrdered } from "lucide-react";
+import { ArrowLeft, Check, Footprints, LocateFixed, Route, Trash2, Loader2, Link2, ArrowDown, ChevronUp, ChevronDown, Sparkles, ListOrdered, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, type Restaurant } from "@/lib/schema";
 import { CATEGORY_COLOR } from "@/lib/categories";
@@ -13,6 +13,9 @@ import type { LegState } from "@/components/map/route-map";
 import { ROUTE_MAX_STOPS, readRouteSelection, writeRouteSelection } from "@/lib/route-selection";
 import { locateUser } from "@/lib/locate";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useIsMobile } from "@/lib/use-media-query";
+import { BottomSheet, type Snap } from "@/components/mobile/bottom-sheet";
+import { TopBar } from "@/components/mobile/top-bar";
 
 const RouteMap = dynamic(() => import("@/components/map/route-map"), { ssr: false });
 const MAX_STOPS = ROUTE_MAX_STOPS;
@@ -27,6 +30,9 @@ export function RoutePlanner({ restaurants, initial }: { restaurants: Restaurant
   const [sharedStart, setSharedStart] = useState<{ lat: number; lng: number } | null>(null); // partida vinda do link
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<RouteMode>("shortest");
+  const isMobile = useIsMobile();
+  const [snap, setSnap] = useState<Snap>("half");
+  const [query, setQuery] = useState("");
   const [visited, setVisited] = useState<Set<string>>(() => new Set()); // paradas já feitas (checkbox)
   const [shareCode, setShareCode] = useState<string | null>(null); // código do link curto da rota atual
   const autoPlan = useRef(false); // link aberto: traça sozinho após hidratar
@@ -82,6 +88,7 @@ export function RoutePlanner({ restaurants, initial }: { restaurants: Restaurant
       setResult(data);
       setShareCode(null);
       setVisited(new Set());
+      setSnap("half"); // celular: mostra o resumo com o mapa visível em cima
     } catch (e) {
       setError(/denied/i.test((e as Error).message ?? "") ? "Permita a localização ou desligue o ponto de partida." : (e as Error).message || "Não foi possível obter sua localização.");
     } finally {
@@ -147,11 +154,178 @@ export function RoutePlanner({ restaurants, initial }: { restaurants: Restaurant
   const mapStops = useMemo(() => places.map((r) => ({ slug: r.slug, name: r.name, lat: r.coordinates!.lat, lng: r.coordinates!.lng, selected: selected.has(r.slug) })), [places, selected]);
   const chosen = places.filter((r) => selected.has(r.slug));
 
+  /* ---------- Peças compartilhadas pelos dois layouts ---------- */
+  const optionsRow = (
+    <>
+      <button
+        type="button"
+        onClick={() => setUseLocation((v) => !v)}
+        aria-pressed={useLocation}
+        aria-label="Partir de onde estou"
+        title="Partir de onde estou"
+        className={cn(
+          "flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-colors",
+          isMobile ? "size-9 justify-center px-0" : "px-3", // celular: só o ícone, para caber ao lado dos modos
+          useLocation ? "border-primary bg-primary text-primary-foreground" : "border-white/70 bg-white/45 hover:bg-white/75 dark:border-white/15 dark:bg-white/12 dark:hover:bg-white/20",
+        )}
+      >
+        <LocateFixed className="size-4" />{!isMobile && " Partir de onde estou"}
+      </button>
+      <ModeButton active={mode === "shortest"} onClick={() => changeMode("shortest")} icon={<Sparkles className="size-3.5" />}>Mais curta</ModeButton>
+      <ModeButton active={mode === "custom"} onClick={() => changeMode("custom")} icon={<ListOrdered className="size-3.5" />}>Personalizada</ModeButton>
+    </>
+  );
+
+  const clearButton = selected.size > 0 && !result && (
+    <button type="button" onClick={() => { setSelected(new Set()); setResult(null); }} className="flex min-h-8 items-center gap-1 rounded-full px-2.5 text-xs font-semibold text-muted-foreground hover:bg-white/60 dark:hover:bg-white/12">
+      <Trash2 className="size-3.5" /> Limpar
+    </button>
+  );
+
+  const orderSection = !result && mode === "custom" && chosen.length > 0 && (
+    <section className="border-b border-white/60 px-3 py-2 dark:border-white/10" aria-label="Ordem das paradas">
+      <p className="px-2 pb-1 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Sua ordem</p>
+      <ol className="flex flex-col gap-0.5">
+        {[...selected].map((slug, i, arr) => {
+          const r = places.find((x) => x.slug === slug);
+          if (!r) return null;
+          return (
+            <li key={slug} className="flex items-center gap-2 rounded-xl bg-blue-600/10 py-1.5 pr-1.5 pl-2.5">
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white">{i + 1}</span>
+              <span className="min-w-0 flex-1 truncate text-sm font-bold">{r.name}</span>
+              <button type="button" onClick={() => move(slug, -1)} disabled={i === 0} aria-label="Subir" className="flex size-9 items-center justify-center rounded-full hover:bg-white/60 disabled:opacity-30 dark:hover:bg-white/18"><ChevronUp className="size-4" /></button>
+              <button type="button" onClick={() => move(slug, 1)} disabled={i === arr.length - 1} aria-label="Descer" className="flex size-9 items-center justify-center rounded-full hover:bg-white/60 disabled:opacity-30 dark:hover:bg-white/18"><ChevronDown className="size-4" /></button>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+
+  const norm = (t: string) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const q = norm(query.trim());
+  const shown = q ? places.filter((r) => norm(r.name).includes(q) || r.categories.some((c) => norm(CATEGORIES[c]).includes(q))) : places;
+
+  // Barra de busca: no celular aparece só com o sheet expandido; no desktop, sempre.
+  const searchEl = (!isMobile || snap === "full") && !result && (
+    <div className="animate-in fade-in slide-in-from-top-1 px-3 pt-2 duration-200">
+      <label className="glass-soft flex min-h-11 items-center gap-2 rounded-2xl px-3">
+        <Search className="size-4 shrink-0 text-muted-foreground" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar lugar ou categoria…"
+          aria-label="Buscar lugar"
+          enterKeyHint="search"
+          className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/70"
+        />
+        {query && (
+          <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="flex size-7 items-center justify-center rounded-full hover:bg-white/60 dark:hover:bg-white/12">
+            <X className="size-3.5" />
+          </button>
+        )}
+      </label>
+    </div>
+  );
+
+  const listEl = (
+    <ul className="flex flex-col gap-1 px-3 py-2">
+      {shown.length === 0 && (
+        <li className="m-2 rounded-2xl bg-white/50 p-5 text-center text-sm text-muted-foreground dark:bg-white/12">Nenhum lugar com “{query}”.</li>
+      )}
+      {shown.map((r) => {
+        const on = selected.has(r.slug);
+        const Icon = CATEGORY_ICON[r.categories[0]];
+        return (
+          <li key={r.slug}>
+            <button
+              type="button"
+              onClick={() => toggle(r.slug)}
+              aria-pressed={on}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition-[background-color,box-shadow] hover:bg-white/55 dark:hover:bg-white/12",
+                on && "bg-blue-600/10 shadow-[inset_0_0_0_1.5px_rgba(37,99,235,0.45)]",
+              )}
+            >
+              {/* Ícone: pastel da categoria fora do rolê; azul da rota (mesmo do mapa) dentro */}
+              <span
+                className={cn(
+                  "flex size-9 shrink-0 items-center justify-center rounded-full border-2 transition-[background-color,color,transform]",
+                  on ? "scale-105 border-blue-600 bg-blue-600 text-white shadow-[0_6px_14px_rgba(37,99,235,0.4)]" : "border-white/80 dark:border-white/15",
+                )}
+                style={on ? undefined : {
+                  background: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 28%, white)`,
+                  color: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 75%, #1e293b)`,
+                }}
+              >
+                {on ? <Check className="size-4" strokeWidth={3} /> : <Icon className="size-4" strokeWidth={2.5} />}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className={cn("block truncate text-[15px] font-bold transition-colors", on ? "text-blue-700 dark:text-blue-300" : "text-foreground")}>{r.name}</span>
+                <span className="block truncate text-xs text-muted-foreground">{r.categories.map((c) => CATEGORIES[c]).join(", ")}</span>
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+
+  const summaryEl = result && (
+    <RouteSummary result={result} onEdit={() => setResult(null)} onCopy={copyLink} copied={copied} modeLabel={mode === "custom" ? "Rota na sua ordem" : "Menor rota"} visited={visited} onToggleVisited={toggleVisited} legStates={legStates} />
+  );
+
+  const footerEl = !result && (
+    <div className="flex flex-col gap-1.5 p-3 pb-[max(12px,env(safe-area-inset-bottom))] md:p-4">
+      {error && <p className="text-xs font-semibold text-rose-500">{error}</p>}
+      <button
+        type="button"
+        onClick={() => plan()}
+        disabled={busy || selected.size < 2}
+        className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-bold text-primary-foreground shadow-[0_8px_20px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+      >
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Route className="size-4" />}
+        {busy ? "Calculando…" : selected.size < 2 ? `Escolha ao menos 2 lugares (${selected.size})` : mode === "custom" ? `Traçar nesta ordem (${selected.size})` : `Menor rota com ${selected.size} lugares`}
+      </button>
+      <p className="text-center text-[10px] text-muted-foreground">
+        {mode === "custom" ? "Visita na ordem que você definiu" : "Ordem calculada para o menor tempo a pé"} · até {MAX_STOPS} paradas
+      </p>
+    </div>
+  );
+
+  /* ---------- Mobile: mapa inteiro, barra no topo, ilha de opções, sheet com a lista ---------- */
+  if (isMobile) {
+    const sheetHeader = (
+      <div className="flex items-center justify-between px-5 pb-2">
+        <p className="text-[15px] font-extrabold">{result ? "Sua rota" : "Lugares"}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-muted-foreground">{result ? `${result.stops.filter((x) => x.slug).length} paradas` : `${selected.size} de ${MAX_STOPS} escolhidos`}</p>
+          {clearButton}
+        </div>
+      </div>
+    );
+    return (
+      <div className="relative h-dvh w-full overflow-hidden bg-background" style={{ "--sheet-h": "50dvh" } as React.CSSProperties}>
+        <div className="absolute inset-0"><RouteMap stops={mapStops} result={result} legStates={legStates} visited={visited} onToggle={toggle} /></div>
+        <TopBar title="Rolê de bares" subtitle="Menor rota a pé entre os lugares" authEnabled={false} backHref="/" />
+        {/* Ilha flutuante com as opções, logo abaixo da barra do topo */}
+        <div className="mfl-noscrollbar glass fixed inset-x-3 top-[max(72px,calc(env(safe-area-inset-top)+64px))] z-20 flex gap-1.5 overflow-x-auto rounded-full p-1.5">
+          {optionsRow}
+        </div>
+        <BottomSheet snap={snap} onSnapChange={setSnap} header={sheetHeader} footer={footerEl || undefined}>
+          {result ? summaryEl : (<>{searchEl}{orderSection}{listEl}</>)}
+        </BottomSheet>
+      </div>
+    );
+  }
+
+  /* ---------- Desktop: painel à esquerda ---------- */
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-background">
       <div className="absolute inset-0"><RouteMap stops={mapStops} result={result} legStates={legStates} visited={visited} onToggle={toggle} /></div>
 
-      <aside className="glass mfl-scroll absolute inset-x-3 top-[45dvh] bottom-3 z-10 flex flex-col overflow-hidden rounded-[28px] md:inset-auto md:top-7 md:bottom-7 md:left-7 md:w-[400px]">
+      <aside className="glass absolute top-7 bottom-7 left-7 z-10 flex w-[400px] flex-col overflow-hidden rounded-[28px]">
         <header className="flex items-center gap-3 px-5 pt-5 pb-3">
           <Link href="/" aria-label="Voltar ao mapa" className="glass-soft flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105 active:scale-95">
             <ArrowLeft className="size-4" />
@@ -162,110 +336,14 @@ export function RoutePlanner({ restaurants, initial }: { restaurants: Restaurant
           </div>
           <div className="ml-auto"><ThemeToggle /></div>
         </header>
-
-        <div className="flex items-center gap-2 border-y border-white/60 dark:border-white/10 px-5 py-3">
-          <button
-            type="button"
-            onClick={() => setUseLocation((v) => !v)}
-            aria-pressed={useLocation}
-            className={cn("flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition-colors", useLocation ? "border-primary bg-primary text-primary-foreground" : "border-white/70 dark:border-white/15 bg-white/45 dark:bg-white/10 hover:bg-white/75 dark:bg-white/15")}
-          >
-            <LocateFixed className="size-3.5" /> Partir de onde estou
-          </button>
-          {selected.size > 0 && (
-            <button type="button" onClick={() => { setSelected(new Set()); setResult(null); }} className="ml-auto flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-semibold text-muted-foreground hover:bg-white/60 dark:bg-white/10">
-              <Trash2 className="size-3.5" /> Limpar
-            </button>
-          )}
+        <div className="flex flex-wrap items-center gap-1.5 border-y border-white/60 px-4 py-3 dark:border-white/10">
+          {optionsRow}
+          <div className="ml-auto">{clearButton}</div>
         </div>
-
-        {/* Modo: menor rota (calculada) ou ordem personalizada (definida pelo usuário) */}
-        <div className="flex gap-1 border-b border-white/60 px-5 py-2.5 dark:border-white/10">
-          <ModeButton active={mode === "shortest"} onClick={() => changeMode("shortest")} icon={<Sparkles className="size-3.5" />}>Mais curta</ModeButton>
-          <ModeButton active={mode === "custom"} onClick={() => changeMode("custom")} icon={<ListOrdered className="size-3.5" />}>Personalizada</ModeButton>
+        <div className="mfl-scroll flex min-h-0 flex-1 flex-col overflow-y-auto">
+          {result ? summaryEl : (<>{searchEl}{orderSection}{listEl}</>)}
         </div>
-
-        {!result && mode === "custom" && chosen.length > 0 && (
-          <section className="border-b border-white/60 px-3 py-2 dark:border-white/10" aria-label="Ordem das paradas">
-            <p className="px-2 pb-1 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Sua ordem</p>
-            <ol className="flex flex-col gap-0.5">
-              {[...selected].map((slug, i, arr) => {
-                const r = places.find((x) => x.slug === slug);
-                if (!r) return null;
-                return (
-                  <li key={slug} className="flex items-center gap-2 rounded-xl bg-blue-600/10 py-1.5 pr-1.5 pl-2.5">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white">{i + 1}</span>
-                    <span className="min-w-0 flex-1 truncate text-sm font-bold">{r.name}</span>
-                    <button type="button" onClick={() => move(slug, -1)} disabled={i === 0} aria-label="Subir" className="flex size-8 items-center justify-center rounded-full hover:bg-white/60 disabled:opacity-30 dark:hover:bg-white/10"><ChevronUp className="size-4" /></button>
-                    <button type="button" onClick={() => move(slug, 1)} disabled={i === arr.length - 1} aria-label="Descer" className="flex size-8 items-center justify-center rounded-full hover:bg-white/60 disabled:opacity-30 dark:hover:bg-white/10"><ChevronDown className="size-4" /></button>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        )}
-
-        {result ? (
-          <RouteSummary result={result} onEdit={() => setResult(null)} onCopy={copyLink} copied={copied} modeLabel={mode === "custom" ? "Rota na sua ordem" : "Menor rota"} visited={visited} onToggleVisited={toggleVisited} legStates={legStates} />
-        ) : (
-          <ul className="mfl-scroll flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-2">
-            {places.map((r) => {
-              const on = selected.has(r.slug);
-              const Icon = CATEGORY_ICON[r.categories[0]];
-              return (
-                <li key={r.slug}>
-                  <button
-                    type="button"
-                    onClick={() => toggle(r.slug)}
-                    aria-pressed={on}
-                    className={cn(
-                      "flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition-[background-color,box-shadow] hover:bg-white/55 dark:bg-white/10",
-                      on && "bg-blue-600/10 shadow-[inset_0_0_0_1.5px_rgba(37,99,235,0.45)]",
-                    )}
-                  >
-                    {/* Ícone: desbotado quando fora do rolê; azul da rota (mesmo do mapa) quando dentro */}
-                    <span
-                      className={cn(
-                        "flex size-9 shrink-0 items-center justify-center rounded-full border-2 transition-[background-color,color,transform]",
-                        on ? "scale-105 border-blue-600 bg-blue-600 text-white shadow-[0_6px_14px_rgba(37,99,235,0.4)]" : "border-white/80 dark:border-white/15",
-                      )}
-                      // Fora do rolê: versão pastel da cor da categoria (opaca, ainda parece clicável)
-                      style={on ? undefined : {
-                        background: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 28%, white)`,
-                        color: `color-mix(in oklab, ${CATEGORY_COLOR[r.categories[0]]} 75%, #1e293b)`,
-                      }}
-                    >
-                      {on ? <Check className="size-4" strokeWidth={3} /> : <Icon className="size-4" strokeWidth={2.5} />}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className={cn("block truncate text-[15px] font-bold transition-colors", on ? "text-blue-700 dark:text-blue-300" : "text-foreground")}>{r.name}</span>
-                      <span className="block truncate text-xs text-muted-foreground">{r.categories.map((c) => CATEGORIES[c]).join(", ")}</span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        <footer className="flex flex-col gap-2 border-t border-white/60 dark:border-white/10 p-4">
-          {error && <p className="text-xs font-semibold text-rose-500">{error}</p>}
-          <button
-            type="button"
-            onClick={() => plan()}
-            disabled={busy || selected.size < 2}
-            className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-bold text-primary-foreground shadow-[0_8px_20px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
-          >
-            {busy ? <Loader2 className="size-4 animate-spin" /> : <Route className="size-4" />}
-            {busy ? "Calculando…" : selected.size < 2 ? `Escolha ao menos 2 lugares (${selected.size})` : mode === "custom" ? `Traçar nesta ordem (${selected.size})` : `Menor rota com ${selected.size} lugares`}
-          </button>
-          <p className="text-center text-[10px] text-muted-foreground">
-            {mode === "custom" ? "Visita na ordem que você definiu" : "Ordem calculada para o menor tempo a pé"} · até {MAX_STOPS} paradas
-          </p>
-          {chosen.length > 0 && !result && (
-            <p className="truncate text-center text-[11px] text-muted-foreground">{chosen.map((r) => r.name).join(" · ")}</p>
-          )}
-        </footer>
+        {footerEl && <footer className="border-t border-white/60 dark:border-white/10">{footerEl}</footer>}
       </aside>
     </div>
   );
@@ -284,10 +362,10 @@ function RouteSummary({ result, onEdit, onCopy, copied, modeLabel, visited, onTo
           {done > 0 && <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">{done} de {total} {done === 1 ? "visitado" : "visitados"}{done === total ? " · rolê completo!" : ""}</p>}
         </div>
         <div className="flex gap-1.5">
-          <button type="button" onClick={onCopy} className={cn("flex min-h-9 items-center gap-1 rounded-full px-3 text-xs font-semibold transition-colors", copied ? "bg-emerald-500 text-white" : "bg-white/60 hover:bg-white/85 dark:bg-white/10 dark:hover:bg-white/15")}>
+          <button type="button" onClick={onCopy} className={cn("flex min-h-9 items-center gap-1 rounded-full px-3 text-xs font-semibold transition-colors", copied ? "bg-emerald-500 text-white" : "bg-white/60 hover:bg-white/85 dark:bg-white/12 dark:hover:bg-white/22")}>
             {copied ? <Check className="size-3.5" /> : <Link2 className="size-3.5" />} {copied ? "Copiado" : "Copiar link"}
           </button>
-          <button type="button" onClick={onEdit} className="min-h-9 rounded-full bg-white/60 px-3 text-xs font-semibold hover:bg-white/85 dark:bg-white/10 dark:hover:bg-white/15">Editar</button>
+          <button type="button" onClick={onEdit} className="min-h-9 rounded-full bg-white/60 px-3 text-xs font-semibold hover:bg-white/85 dark:bg-white/12 dark:hover:bg-white/22">Editar</button>
         </div>
       </div>
       {/* Paradas na ordem de visita; cada trecho aparece ENTRE duas paradas */}
@@ -345,8 +423,8 @@ function ModeButton({ active, onClick, icon, children }: { active: boolean; onCl
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-full text-xs font-bold transition-colors",
-        active ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgba(15,23,42,0.2)]" : "bg-white/45 hover:bg-white/75 dark:bg-white/10 dark:hover:bg-white/15",
+        "flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-bold whitespace-nowrap transition-colors",
+        active ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgba(15,23,42,0.2)]" : "bg-white/45 hover:bg-white/75 dark:bg-white/12 dark:hover:bg-white/22",
       )}
     >
       {icon} {children}

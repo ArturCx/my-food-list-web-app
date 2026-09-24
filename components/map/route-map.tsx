@@ -143,5 +143,10 @@ export default function RouteMap({ stops, result, legStates, visited, onToggle }
 function fitAll(m: MLMap, coords: [number, number][]) {
   if (coords.length < 2) return;
   const b = coords.reduce((acc, c) => acc.extend(c), new LngLatBounds(coords[0], coords[0]));
-  m.fitBounds(b, { padding: { top: 60, bottom: 60, left: 440, right: 60 }, duration: 700, maxZoom: 16 });
+  // Área livre: desktop = à direita do painel; celular = entre a ilha do topo e o bottom sheet (metade)
+  const mobile = m.getContainer().clientWidth < 768;
+  const padding = mobile
+    ? { top: 150, bottom: Math.round(m.getContainer().clientHeight * 0.5) + 24, left: 28, right: 28 }
+    : { top: 60, bottom: 60, left: 440, right: 60 };
+  m.fitBounds(b, { padding, duration: 700, maxZoom: 16 });
 }
