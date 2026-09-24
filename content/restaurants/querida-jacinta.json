@@ -1,0 +1,51 @@
+{
+  "slug": "querida-jacinta",
+  "name": "Querida Jacinta",
+  "description": "Cervejaria, restaurante e bar dançante num galpão, com cerveja própria e petiscos mineiros",
+  "categories": [
+    "cervejaria",
+    "bar",
+    "cozinha-mineira"
+  ],
+  "address": "Rua Grão Pará, 185 - Santa Efigênia, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.923818,
+    "lng": -43.9218827
+  },
+  "instagram": "queridajacinta",
+  "instagramEmbed": "https://www.instagram.com/p/DdoQo86kc8h/",
+  "menuUrl": "https://app.scanmimenu.com/local/querida-jacinta/",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "11:00-14:30"
+    ],
+    "wed": [
+      "11:00-14:30",
+      "18:00-00:00"
+    ],
+    "thu": [
+      "11:00-14:30",
+      "18:00-00:00"
+    ],
+    "fri": [
+      "11:00-14:30",
+      "18:00-01:00"
+    ],
+    "sat": [
+      "11:30-01:00"
+    ],
+    "sun": [
+      "11:30-16:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/querida-jacinta/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/querida-jacinta/1.jpg": {
+      "x": 52,
+      "y": 41
+    }
+  }
+}

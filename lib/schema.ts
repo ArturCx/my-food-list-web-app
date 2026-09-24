@@ -11,6 +11,10 @@ export const CATEGORIES = {
   "cozinha-espanhola": "Cozinha Espanhola",
   "cozinha-asiatica": "Cozinha Asiática",
   "cozinha-alema": "Cozinha Alemã",
+  "cozinha-italiana": "Cozinha Italiana",
+  "cozinha-mediterranea": "Cozinha Mediterrânea",
+  "cozinha-latina": "Cozinha Latina",
+  bistro: "Bistrô",
   cafe: "Café",
 } as const;
 

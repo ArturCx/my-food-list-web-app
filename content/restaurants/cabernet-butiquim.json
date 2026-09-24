@@ -1,0 +1,48 @@
+{
+  "slug": "cabernet-butiquim",
+  "name": "Cabernet Butiquim",
+  "description": "Butiquim de vinhos com petiscos autorais, vinhos em taça e loja própria",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
+  "address": "Rua Levindo Lopes, 22 - Funcionários, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9377852,
+    "lng": -43.9396384
+  },
+  "website": "https://cabernetbutiquim.com.br",
+  "instagram": "cabernetbutiquim",
+  "instagramEmbed": "https://www.instagram.com/p/DcdzW7dguRE/",
+  "menuUrl": "https://cabernetbutiquim.goomer.app/",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "11:30-23:00"
+    ],
+    "wed": [
+      "11:30-23:00"
+    ],
+    "thu": [
+      "11:30-23:00"
+    ],
+    "fri": [
+      "11:30-23:00"
+    ],
+    "sat": [
+      "11:30-23:00"
+    ],
+    "sun": [
+      "11:30-16:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/cabernet-butiquim/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/cabernet-butiquim/1.jpg": {
+      "x": 53,
+      "y": 49
+    }
+  }
+}

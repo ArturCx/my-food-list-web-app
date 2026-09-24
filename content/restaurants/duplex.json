@@ -1,0 +1,44 @@
+{
+  "slug": "duplex",
+  "name": "Duplex",
+  "description": "Café, vermute e empório na Galeria São Vicente, com brunch o dia todo e música ao vivo",
+  "categories": [
+    "cafe",
+    "bar"
+  ],
+  "address": "Avenida Amazonas, 1073 - Centro, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9208715,
+    "lng": -43.9419267
+  },
+  "instagram": "duplex.bh",
+  "instagramEmbed": "https://www.instagram.com/p/DdlsdJCjtnX/",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": [
+      "09:00-19:00"
+    ],
+    "thu": [
+      "09:00-00:00"
+    ],
+    "fri": [
+      "09:00-19:00"
+    ],
+    "sat": [
+      "09:00-19:00"
+    ],
+    "sun": [
+      "09:00-18:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/duplex/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/duplex/1.jpg": {
+      "x": 38,
+      "y": 47
+    }
+  }
+}

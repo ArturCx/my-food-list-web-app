@@ -1,0 +1,48 @@
+{
+  "slug": "cae-restaurante-bar",
+  "name": "Caê Restaurante Bar",
+  "description": "Restaurante bar com cozinha afetiva e ingredientes regionais, em varanda com jabuticabeira",
+  "categories": [
+    "cozinha-brasileira",
+    "bar"
+  ],
+  "address": "Rua Outono, 314 - Sion, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9412758,
+    "lng": -43.931277
+  },
+  "website": "http://caerestaurantebar.com.br",
+  "instagram": "caerestaurantebar",
+  "instagramEmbed": "https://www.instagram.com/p/DaDDJWajkbC/",
+  "menuUrl": "http://caerestaurantebar.com.br/cd_atual-2/",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-00:00"
+    ],
+    "wed": [
+      "18:00-00:00"
+    ],
+    "thu": [
+      "18:00-00:00"
+    ],
+    "fri": [
+      "12:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/cae-restaurante-bar/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/cae-restaurante-bar/1.jpg": {
+      "x": 54,
+      "y": 52
+    }
+  }
+}

@@ -5,8 +5,8 @@ import type { Category } from "./schema";
  *   laranja  → comida rápida (pizzaria, hamburgueria)
  *   roxo/amarelo → bebida (bar, cervejaria)
  *   verde    → cozinha brasileira e mineira
- *   grafite  → alta gastronomia
- *   azuis    → cozinhas internacionais (espanhola, asiática, alemã)
+ *   grafite  → alta gastronomia, bistrô
+ *   azuis    → cozinhas internacionais (espanhola, asiática, alemã, italiana, mediterrânea, latina)
  *   marrom   → café
  * A primeira categoria do restaurante define a cor.
  */
@@ -21,6 +21,10 @@ export const CATEGORY_COLOR: Record<Category, string> = {
   "cozinha-espanhola": "#0284c7",
   "cozinha-asiatica": "#0e7490",
   "cozinha-alema": "#1d4ed8",
+  "cozinha-italiana": "#4338ca",
+  "cozinha-mediterranea": "#0d9488",
+  "cozinha-latina": "#0891b2",
+  bistro: "#334155",
   cafe: "#78350f",
 };
 
@@ -36,5 +40,9 @@ export const CATEGORY_GRADIENT: Record<Category, string> = {
   "cozinha-espanhola": "linear-gradient(135deg,#38bdf8,#0369a1)",
   "cozinha-asiatica": "linear-gradient(135deg,#22d3ee,#155e75)",
   "cozinha-alema": "linear-gradient(135deg,#60a5fa,#1e40af)",
+  "cozinha-italiana": "linear-gradient(135deg,#818cf8,#3730a3)",
+  "cozinha-mediterranea": "linear-gradient(135deg,#2dd4bf,#0f766e)",
+  "cozinha-latina": "linear-gradient(135deg,#22d3ee,#0e7490)",
+  bistro: "linear-gradient(135deg,#64748b,#1e293b)",
   cafe: "linear-gradient(135deg,#b45309,#451a03)",
 };

@@ -28,7 +28,7 @@
 
 ## 📖 About
 
-**My Food List** is a web **food map** (in pt-BR) of Belo Horizonte, MG. It started as a personal list of favorite bars and restaurants and grew into a small product: **33 hand-picked places** pinned on an interactive map, each with a facade photo, opening hours, menu, Instagram post, and its position in the **Exame Casual "100 Melhores Restaurantes do Brasil"** ranking when it has one.
+**My Food List** is a web **food map** (in pt-BR) of Belo Horizonte, MG. It started as a personal list of favorite bars and restaurants and grew into a small product: **56 hand-picked places** pinned on an interactive map, each with a facade photo, opening hours, menu, Instagram post, and its position in the **Exame Casual "100 Melhores Restaurantes do Brasil"** ranking when it has one.
 
 Signed in, you can **rate** each place (1–5 stars), write a **private note** on a taped paper pad, and filter the map down to your **favorites**. The **Rolê de bares** page lets you pick a handful of places and get the **shortest walking route** through all of them — or your own order — with a shareable short link.
 

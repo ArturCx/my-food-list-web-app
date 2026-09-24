@@ -1,0 +1,45 @@
+{
+  "slug": "caixote-bar",
+  "name": "Caixote Bar",
+  "description": "Boteco tradicional com a parmegiana mais famosa de BH e música ao vivo de quinta a domingo",
+  "categories": [
+    "bar",
+    "cozinha-italiana"
+  ],
+  "address": "Rua Ivaí, 100 - Serra, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9458746,
+    "lng": -43.9186542
+  },
+  "instagram": "caixotebh",
+  "instagramEmbed": "https://www.instagram.com/p/DaF7R6LtQHH/",
+  "menuUrl": "https://caixote-bar-e-restaurante.goomer.app/",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": [
+      "11:30-23:00"
+    ],
+    "thu": [
+      "11:30-23:00"
+    ],
+    "fri": [
+      "11:30-23:00"
+    ],
+    "sat": [
+      "11:30-23:00"
+    ],
+    "sun": [
+      "11:30-16:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/caixote-bar/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/caixote-bar/1.jpg": {
+      "x": 51,
+      "y": 51
+    }
+  }
+}

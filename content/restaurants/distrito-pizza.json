@@ -1,0 +1,48 @@
+{
+  "slug": "distrito-pizza",
+  "name": "Distrito Pizza",
+  "description": "Pizza napolitana de massa de longa fermentação, com ingredientes locais e opções veganas",
+  "categories": [
+    "pizzaria",
+    "cozinha-italiana"
+  ],
+  "address": "Rua Gabro, 90 - Santa Tereza, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9171871,
+    "lng": -43.9216227
+  },
+  "website": "https://distritopizza.com.br/",
+  "instagram": "distritopizza",
+  "instagramEmbed": "https://www.instagram.com/p/DHZFG6EsCwu/",
+  "menuUrl": "https://santatereza.distritopizza.com.br/",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-22:30"
+    ],
+    "wed": [
+      "18:00-22:30"
+    ],
+    "thu": [
+      "18:00-22:30"
+    ],
+    "fri": [
+      "18:00-23:00"
+    ],
+    "sat": [
+      "18:00-23:00"
+    ],
+    "sun": [
+      "18:00-22:30"
+    ]
+  },
+  "photos": [
+    "/restaurants/distrito-pizza/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/distrito-pizza/1.jpg": {
+      "x": 45,
+      "y": 75
+    }
+  }
+}

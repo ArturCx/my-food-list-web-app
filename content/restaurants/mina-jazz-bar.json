@@ -1,0 +1,44 @@
+{
+  "slug": "mina-jazz-bar",
+  "name": "Mina Jazz Bar",
+  "description": "Casa de jazz intimista no antigo Automóvel Clube, com shows ao vivo e cardápio de inspiração asiática",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
+  "address": "Avenida Álvares Cabral, 17 - Centro, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9257261,
+    "lng": -43.9373725
+  },
+  "website": "https://www.minajazzbar.com/",
+  "instagram": "minajazzbar",
+  "instagramEmbed": "https://www.instagram.com/p/DA60AopvYli/",
+  "menuUrl": "https://www.minajazzbar.com/menu",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": [
+      "20:00-02:00"
+    ],
+    "thu": [
+      "20:00-02:00"
+    ],
+    "fri": [
+      "20:00-02:00"
+    ],
+    "sat": [
+      "20:00-02:00"
+    ],
+    "sun": null
+  },
+  "photos": [
+    "/restaurants/mina-jazz-bar/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/mina-jazz-bar/1.jpg": {
+      "x": 50,
+      "y": 52
+    }
+  }
+}

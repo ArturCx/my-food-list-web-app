@@ -1,0 +1,48 @@
+{
+  "slug": "timbuca",
+  "name": "Timbuca",
+  "description": "Bar dentro de um posto de gasolina, com mais de 160 cachaças e petiscos da Minas antiga",
+  "categories": [
+    "bar",
+    "cozinha-mineira"
+  ],
+  "address": "Avenida Afonso Pena, 4321 - Serra, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9472225,
+    "lng": -43.9210688
+  },
+  "website": "https://timbuca.com.br",
+  "instagram": "timbucabar",
+  "instagramEmbed": "https://www.instagram.com/p/DP876DFDaYH/",
+  "menuUrl": "https://timbuca.com.br/cardapio",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-00:00"
+    ],
+    "wed": [
+      "18:00-00:00"
+    ],
+    "thu": [
+      "18:00-00:00"
+    ],
+    "fri": [
+      "18:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/timbuca/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/timbuca/1.jpg": {
+      "x": 55,
+      "y": 55
+    }
+  }
+}

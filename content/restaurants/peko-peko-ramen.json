@@ -1,0 +1,45 @@
+{
+  "slug": "peko-peko-ramen",
+  "name": "Peko Peko Ramen",
+  "description": "Ramen artesanal de caldo caseiro e macarrão fresco, com gyoza e karaage",
+  "categories": [
+    "cozinha-asiatica"
+  ],
+  "address": "Rua Cura D'Ars, 1166 - Barroca, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.932136,
+    "lng": -43.9629575
+  },
+  "website": "https://www.pekopeko.com.br/",
+  "instagram": "pekopeko.ramen",
+  "instagramEmbed": "https://www.instagram.com/p/DN6eyEUgN_k/",
+  "menuUrl": "https://app.cardapioweb.com/pekopekoramen",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-21:45"
+    ],
+    "wed": [
+      "18:00-21:45"
+    ],
+    "thu": [
+      "18:00-21:45"
+    ],
+    "fri": [
+      "18:00-21:45"
+    ],
+    "sat": [
+      "18:00-21:45"
+    ],
+    "sun": null
+  },
+  "photos": [
+    "/restaurants/peko-peko-ramen/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/peko-peko-ramen/1.jpg": {
+      "x": 39,
+      "y": 28
+    }
+  }
+}

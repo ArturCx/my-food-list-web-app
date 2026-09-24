@@ -1,0 +1,55 @@
+{
+  "slug": "ninita",
+  "name": "Ninita",
+  "description": "Cozinha italomineira do chef Léo Paixão, com ravioloni, risoni e sobremesas afetivas",
+  "categories": [
+    "cozinha-italiana",
+    "cozinha-mineira"
+  ],
+  "address": "Rua Bárbara Heliodora, 71 - Lourdes, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9314906,
+    "lng": -43.9441206
+  },
+  "website": "https://www.ninitacozinha.com.br",
+  "instagram": "ninitabh",
+  "instagramEmbed": "https://www.instagram.com/p/DdZIXRFOSpO/",
+  "menuUrl": "https://ninitarestaurante.com.br/menu/",
+  "hours": {
+    "mon": [
+      "18:00-22:00"
+    ],
+    "tue": [
+      "12:00-17:00",
+      "18:00-23:00"
+    ],
+    "wed": [
+      "12:00-17:00",
+      "18:00-23:00"
+    ],
+    "thu": [
+      "12:00-17:00",
+      "18:00-23:00"
+    ],
+    "fri": [
+      "12:00-17:00",
+      "18:00-23:00"
+    ],
+    "sat": [
+      "12:00-17:00",
+      "18:00-23:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/ninita/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/ninita/1.jpg": {
+      "x": 56,
+      "y": 0
+    }
+  }
+}

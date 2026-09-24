@@ -1,0 +1,48 @@
+{
+  "slug": "jangal-pub-garden",
+  "name": "Jângal Pub Garden",
+  "description": "Pub garden com música ao vivo, petiscos e cervejas artesanais em casarão com jardim",
+  "categories": [
+    "bar",
+    "cervejaria"
+  ],
+  "address": "Rua Outono, 523 - Cruzeiro, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9428825,
+    "lng": -43.9294365
+  },
+  "website": "https://jangalbh.com",
+  "instagram": "jangalbh",
+  "instagramEmbed": "https://www.instagram.com/p/DY2EIrPRKpB/",
+  "menuUrl": "https://menu.getin.app/pt-br/yM6XABk0/menus/oVPB5Jkm",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-00:30"
+    ],
+    "wed": [
+      "18:00-00:30"
+    ],
+    "thu": [
+      "18:00-00:30"
+    ],
+    "fri": [
+      "18:00-00:30"
+    ],
+    "sat": [
+      "15:00-00:30"
+    ],
+    "sun": [
+      "16:00-22:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/jangal-pub-garden/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/jangal-pub-garden/1.jpg": {
+      "x": 43,
+      "y": 53
+    }
+  }
+}

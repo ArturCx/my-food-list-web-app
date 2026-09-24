@@ -1,0 +1,44 @@
+{
+  "slug": "a-casa-da-uva",
+  "name": "A Casa da Uva",
+  "description": "Bar de vinhos com mais de 60 rótulos e petiscos mineiros de pequenos produtores",
+  "categories": [
+    "bar",
+    "cozinha-mineira"
+  ],
+  "address": "Rua Pium-Í, 397 - Cruzeiro, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9426434,
+    "lng": -43.9299187
+  },
+  "instagram": "acasadauva",
+  "instagramEmbed": "https://www.instagram.com/p/Da037sniWSw/",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": [
+      "17:30-23:00"
+    ],
+    "thu": [
+      "17:30-23:00"
+    ],
+    "fri": [
+      "17:30-23:00"
+    ],
+    "sat": [
+      "12:00-23:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/a-casa-da-uva/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/a-casa-da-uva/1.jpg": {
+      "x": 40,
+      "y": 73
+    }
+  }
+}

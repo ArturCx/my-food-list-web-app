@@ -1,0 +1,41 @@
+{
+  "slug": "mitra-restaurante",
+  "name": "Mitra Restaurante",
+  "description": "Rooftop mediterrâneo com toques mineiros, lounge e sunset bar do chef Cristóvão Laruça",
+  "categories": [
+    "cozinha-mediterranea",
+    "bar"
+  ],
+  "address": "Rodovia BR-356, 7515 - Belvedere, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -20.0022075,
+    "lng": -43.964926
+  },
+  "instagram": "mitra.restaurante",
+  "instagramEmbed": "https://www.instagram.com/p/DdJvIidkRXO/",
+  "menuUrl": "https://menu.zig.fun/MitraBh",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": null,
+    "thu": null,
+    "fri": [
+      "17:00-00:00"
+    ],
+    "sat": [
+      "12:00-22:00"
+    ],
+    "sun": [
+      "12:00-20:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/mitra-restaurante/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/mitra-restaurante/1.jpg": {
+      "x": 51,
+      "y": 53
+    }
+  }
+}

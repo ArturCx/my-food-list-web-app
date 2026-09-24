@@ -1,0 +1,49 @@
+{
+  "slug": "forno-da-saudade",
+  "name": "Forno da Saudade",
+  "description": "Pizza de forno a lenha em casarão dos anos 30, com música ao vivo e clima de bar de praça",
+  "categories": [
+    "pizzaria",
+    "bar"
+  ],
+  "address": "Rua Patrocínio, 1 - Carlos Prates, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9157782,
+    "lng": -43.9515115
+  },
+  "instagram": "fornodasaudade",
+  "instagramEmbed": "https://www.instagram.com/p/DZN0sgCAAc3/",
+  "menuUrl": "https://fornodasaudade.menudino.com/",
+  "hours": {
+    "mon": [
+      "17:00-23:30"
+    ],
+    "tue": [
+      "17:00-23:30"
+    ],
+    "wed": [
+      "17:00-23:30"
+    ],
+    "thu": [
+      "17:00-23:30"
+    ],
+    "fri": [
+      "17:00-23:30"
+    ],
+    "sat": [
+      "17:00-23:30"
+    ],
+    "sun": [
+      "15:00-21:30"
+    ]
+  },
+  "photos": [
+    "/restaurants/forno-da-saudade/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/forno-da-saudade/1.jpg": {
+      "x": 60,
+      "y": 0
+    }
+  }
+}

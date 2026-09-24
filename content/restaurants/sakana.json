@@ -38,5 +38,11 @@
   },
   "photos": [
     "/restaurants/sakana/1.jpg"
-  ]
+  ],
+  "photoFocus": {
+    "/restaurants/sakana/1.jpg": {
+      "x": 49,
+      "y": 58
+    }
+  }
 }

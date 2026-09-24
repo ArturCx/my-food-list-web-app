@@ -1,0 +1,44 @@
+{
+  "slug": "andu-de-dois",
+  "name": "Andu de Dois",
+  "description": "Comida geraizeira do norte de Minas, com arroz de pequi e cachaças da casa",
+  "categories": [
+    "cozinha-mineira",
+    "bar"
+  ],
+  "address": "Rua Gabro, 41 - Santa Tereza, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9153482,
+    "lng": -43.920873
+  },
+  "instagram": "andudedois",
+  "instagramEmbed": "https://www.instagram.com/p/DYuYbCzlr6A/",
+  "hours": {
+    "mon": null,
+    "tue": null,
+    "wed": null,
+    "thu": [
+      "11:00-15:00",
+      "18:00-00:00"
+    ],
+    "fri": [
+      "11:00-15:00",
+      "18:00-00:00"
+    ],
+    "sat": [
+      "11:00-00:00"
+    ],
+    "sun": [
+      "12:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/andu-de-dois/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/andu-de-dois/1.jpg": {
+      "x": 47,
+      "y": 86
+    }
+  }
+}

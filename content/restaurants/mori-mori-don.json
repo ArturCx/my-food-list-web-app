@@ -1,0 +1,53 @@
+{
+  "slug": "mori-mori-don",
+  "name": "Mori Mori Don",
+  "description": "Japonês descomplicado de donburis e arroz frito, pedido no totem e retirada no balcão",
+  "categories": [
+    "cozinha-asiatica"
+  ],
+  "address": "Avenida Brasil, 1847 - Boa Viagem, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9321533,
+    "lng": -43.9356067
+  },
+  "website": "https://morimoridon.com.br/",
+  "instagram": "morimori.don",
+  "instagramEmbed": "https://www.instagram.com/p/DYFKx3BEf9X/",
+  "menuUrl": "https://deliverydireto.com.br/morimoridon/morimoridon",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ],
+    "wed": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ],
+    "thu": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ],
+    "fri": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ],
+    "sat": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ],
+    "sun": [
+      "11:00-15:00",
+      "18:00-22:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/mori-mori-don/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/mori-mori-don/1.jpg": {
+      "x": 11,
+      "y": 34
+    }
+  }
+}

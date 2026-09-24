@@ -1,0 +1,48 @@
+{
+  "slug": "nicolau-bar-da-esquina",
+  "name": "Nicolau Bar da Esquina",
+  "description": "Gastrobar de Léo Paixão no Belvedere, com cozinha latino-americana, ceviches e drinks autorais",
+  "categories": [
+    "cozinha-latina",
+    "bar"
+  ],
+  "address": "Rua Dicíola Horta, 77 - Belvedere, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9741447,
+    "lng": -43.9354604
+  },
+  "website": "https://www.nicolaubardaesquina.com.br/",
+  "instagram": "nicolaubardaesquina",
+  "instagramEmbed": "https://www.instagram.com/p/DEiQlUgS0Dx/",
+  "menuUrl": "https://www.grupoglouton.com.br/nicolau",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "19:00-23:00"
+    ],
+    "wed": [
+      "19:00-23:00"
+    ],
+    "thu": [
+      "19:00-23:00"
+    ],
+    "fri": [
+      "18:00-23:30"
+    ],
+    "sat": [
+      "18:00-23:30"
+    ],
+    "sun": [
+      "11:00-17:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/nicolau-bar-da-esquina/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/nicolau-bar-da-esquina/1.jpg": {
+      "x": 41,
+      "y": 54
+    }
+  }
+}

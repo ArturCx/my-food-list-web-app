@@ -1,0 +1,49 @@
+{
+  "slug": "pirex-bar",
+  "name": "Pirex Bar",
+  "description": "Boteco na Galeria São Vicente, 9º melhor bar do Brasil, com petiscos autorais e drinks",
+  "categories": [
+    "bar",
+    "cozinha-mineira"
+  ],
+  "address": "Avenida Amazonas, 1049 - Centro, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.922372,
+    "lng": -43.9442909
+  },
+  "instagram": "barpirex",
+  "instagramEmbed": "https://www.instagram.com/p/DY91luyESM-/",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "11:30-15:00"
+    ],
+    "wed": [
+      "11:30-15:00",
+      "18:00-00:00"
+    ],
+    "thu": [
+      "11:30-15:00",
+      "18:00-00:00"
+    ],
+    "fri": [
+      "11:30-15:00",
+      "18:00-00:00"
+    ],
+    "sat": [
+      "12:00-00:00"
+    ],
+    "sun": [
+      "12:00-18:00"
+    ]
+  },
+  "photos": [
+    "/restaurants/pirex-bar/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/pirex-bar/1.jpg": {
+      "x": 52,
+      "y": 42
+    }
+  }
+}

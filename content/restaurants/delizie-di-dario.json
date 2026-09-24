@@ -1,0 +1,40 @@
+{
+  "slug": "delizie-di-dario",
+  "name": "Delizie di Dario",
+  "description": "Bistrô-pizzaria do chef italiano Dario Panzeri, com pizzas e pratos da tradição da Itália",
+  "categories": [
+    "pizzaria",
+    "bistro",
+    "cozinha-italiana"
+  ],
+  "address": "Rua Cuiabá, 803 - Prado, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9293727,
+    "lng": -43.9673522
+  },
+  "instagram": "delizie_didario",
+  "instagramEmbed": "https://www.instagram.com/p/Ccq1q-COm90/",
+  "menuUrl": "https://cardapio.menu/restaurants/belo-horizonte/delizie-di-dario-bistro",
+  "hours": {
+    "mon": null,
+    "tue": [
+      "18:00-22:00"
+    ],
+    "wed": [
+      "18:00-22:00"
+    ],
+    "thu": [
+      "18:00-22:00"
+    ],
+    "fri": [
+      "18:00-22:00"
+    ],
+    "sat": [
+      "18:00-22:00"
+    ],
+    "sun": null
+  },
+  "photos": [
+    "/restaurants/delizie-di-dario/1.jpg"
+  ]
+}

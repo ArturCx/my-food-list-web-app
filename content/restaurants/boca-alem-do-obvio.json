@@ -1,0 +1,25 @@
+{
+  "slug": "boca-alem-do-obvio",
+  "name": "Boca Além do Óbvio",
+  "description": "Boteco despretensioso no Alto Caiçaras com hambúrgueres autorais de nomes bem brasileiros",
+  "categories": [
+    "hamburgueria",
+    "bar"
+  ],
+  "address": "Rua Cisplatina, 327 - Alto Caiçaras, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9038519,
+    "lng": -43.971962
+  },
+  "instagram": "bocabutecodeburger",
+  "instagramEmbed": "https://www.instagram.com/p/DbMOqhJP8M0/",
+  "photos": [
+    "/restaurants/boca-alem-do-obvio/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/boca-alem-do-obvio/1.jpg": {
+      "x": 66,
+      "y": 34
+    }
+  }
+}

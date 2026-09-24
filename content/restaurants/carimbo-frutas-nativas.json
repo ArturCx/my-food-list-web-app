@@ -1,0 +1,26 @@
+{
+  "slug": "carimbo-frutas-nativas",
+  "name": "Carimbó Frutas Nativas",
+  "description": "Bar de frutas nativas brasileiras, com drinks, sucos e petiscos autorais em Santa Tereza",
+  "categories": [
+    "bar",
+    "cozinha-brasileira"
+  ],
+  "address": "Rua Dores do Indaiá, 93 - Santa Tereza, Belo Horizonte - MG",
+  "coordinates": {
+    "lat": -19.9169402,
+    "lng": -43.9131004
+  },
+  "instagram": "carimbo_frutas_nativas",
+  "instagramEmbed": "https://www.instagram.com/p/DdrB9WhlkVN/",
+  "menuUrl": "https://bit.ly/ifoodcarimbo",
+  "photos": [
+    "/restaurants/carimbo-frutas-nativas/1.jpg"
+  ],
+  "photoFocus": {
+    "/restaurants/carimbo-frutas-nativas/1.jpg": {
+      "x": 42,
+      "y": 12
+    }
+  }
+}
