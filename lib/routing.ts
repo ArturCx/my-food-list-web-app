@@ -38,7 +38,7 @@ export async function route(points: LatLng[]) {
   const legs = data.trip.legs.map((leg) => {
     const pts = decodePolyline6(leg.shape);
     coords.push(...pts);
-    return { km: leg.summary.length, min: leg.summary.time / 60 };
+    return { km: leg.summary.length, min: leg.summary.time / 60, coords: pts };
   });
   return { coords, legs };
 }

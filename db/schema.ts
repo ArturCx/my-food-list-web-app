@@ -1,4 +1,4 @@
-import { pgTable, text, smallint, timestamp, primaryKey, index } from "drizzle-orm/pg-core";
+import { pgTable, text, smallint, timestamp, primaryKey, index, jsonb, doublePrecision } from "drizzle-orm/pg-core";
 
 /**
  * Dados do usuário sobre cada lugar. Os lugares em si continuam nos JSONs;
@@ -18,3 +18,16 @@ export const userPlaces = pgTable(
 );
 
 export type UserPlace = typeof userPlaces.$inferSelect;
+
+/** Rotas compartilhadas por link curto (/rota/<code>). Qualquer pessoa pode criar e abrir. */
+export const sharedRoutes = pgTable("shared_routes", {
+  code: text("code").primaryKey(), // 8 chars base62
+  slugs: jsonb("slugs").$type<string[]>().notNull(), // na ordem de visita
+  mode: text("mode").$type<"shortest" | "custom">().default("shortest").notNull(),
+  startLat: doublePrecision("start_lat"),
+  startLng: doublePrecision("start_lng"),
+  createdBy: text("created_by"), // userId do Clerk, se logado
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type SharedRoute = typeof sharedRoutes.$inferSelect;

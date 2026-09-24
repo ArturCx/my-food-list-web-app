@@ -7,22 +7,24 @@ const bodySchema = z.object({
   slugs: z.array(z.string()).min(2).max(15),
   /** Ponto de partida opcional (ex.: localização do usuário). */
   start: z.object({ lat: z.number(), lng: z.number() }).optional(),
+  /** "shortest": ordem ótima (padrão). "custom": visita na ordem em que os slugs vieram. */
+  mode: z.enum(["shortest", "custom"]).default("shortest"),
 });
 
 export type RouteStop = { slug: string | null; name: string; lat: number; lng: number };
 export type RouteResult = {
   stops: RouteStop[]; // na ordem de visita (o primeiro pode ser o ponto de partida)
-  legs: { km: number; min: number }[]; // legs[i] = trecho stops[i] → stops[i+1]
+  legs: { km: number; min: number; coords: [number, number][] }[]; // legs[i] = trecho stops[i] → stops[i+1]
   totalKm: number;
   totalMin: number;
   coords: [number, number][]; // geometria do trajeto, [lng, lat]
 };
 
-/** Menor rota a pé passando por todos os lugares escolhidos. */
+/** Rota a pé pelos lugares escolhidos: na menor ordem ou na ordem dada. */
 export async function POST(req: Request) {
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: parsed.error.message }, { status: 400 });
-  const { slugs, start } = parsed.data;
+  const { slugs, start, mode } = parsed.data;
 
   const bySlug = new Map(getRestaurants().map((r) => [r.slug, r]));
   const stops: RouteStop[] = [];
@@ -34,9 +36,12 @@ export async function POST(req: Request) {
   const points: (RouteStop & LatLng)[] = start ? [{ slug: null, name: "Você", ...start }, ...stops] : stops;
 
   try {
-    const m = await matrix(points);
-    const order = bestOrder(m.map((row) => row.map((c) => c.min)), start ? 0 : undefined);
-    const ordered = order.map((i) => points[i]);
+    let ordered = points;
+    if (mode === "shortest") {
+      const m = await matrix(points);
+      const order = bestOrder(m.map((row) => row.map((c) => c.min)), start ? 0 : undefined);
+      ordered = order.map((i) => points[i]);
+    }
     const r = await route(ordered);
     const result: RouteResult = {
       stops: ordered,
