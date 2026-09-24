@@ -16,7 +16,7 @@ export function AuthMenu({ enabled }: { enabled: boolean }) {
         </SignInButton>
       </Show>
       <Show when="signed-in">
-        <UserButton appearance={{ elements: { avatarBox: "size-10" } }} />
+        <UserButton />
       </Show>
     </div>
   );

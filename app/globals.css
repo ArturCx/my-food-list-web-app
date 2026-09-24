@@ -30,6 +30,32 @@
   --glass-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
 }
 
+/* Tema escuro: ativado pela classe `dark` no <html> (lib/theme.ts) */
+.dark {
+  --background: oklch(0.17 0.03 260);
+  --foreground: oklch(0.96 0.01 240);
+  --card: oklch(0.22 0.03 260);
+  --card-foreground: oklch(0.96 0.01 240);
+  --popover: oklch(0.22 0.03 260);
+  --popover-foreground: oklch(0.96 0.01 240);
+  --primary: oklch(0.96 0.01 240);
+  --primary-foreground: oklch(0.17 0.03 260);
+  --secondary: oklch(0.27 0.03 260);
+  --secondary-foreground: oklch(0.96 0.01 240);
+  --muted: oklch(0.27 0.03 260);
+  --muted-foreground: oklch(0.72 0.02 250);
+  --accent: oklch(1 0 0 / 10%);
+  --accent-foreground: oklch(0.96 0.01 240);
+  --destructive: oklch(0.7 0.19 22);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.65 0.15 260);
+  --glass: rgba(15, 23, 42, 0.8);
+  --glass-strong: rgba(15, 23, 42, 0.92);
+  --glass-border: rgba(148, 163, 184, 0.22);
+  --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 8px);
   --radius-md: calc(var(--radius) - 4px);
@@ -83,6 +109,19 @@
 .maplibregl-map {
   font-family: inherit;
   background: #f4f6f8;
+}
+.dark .maplibregl-map {
+  background: #0b1220;
+}
+.dark .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1) hue-rotate(180deg);
+}
+.dark .maplibregl-ctrl-attrib {
+  background: rgba(15, 23, 42, 0.7) !important;
+  color: #94a3b8;
+}
+.dark .maplibregl-ctrl-attrib a {
+  color: #cbd5e1;
 }
 .maplibregl-ctrl-group {
   background: var(--glass) !important;
@@ -214,6 +253,9 @@
   resize: none;
   padding: 12px 16px 14px;
 }
+.dark .mfl-note {
+  --paper: #f5e9a6;
+}
 .mfl-note textarea::placeholder {
   color: rgba(31, 41, 55, 0.45);
 }
@@ -260,4 +302,31 @@
 .mfl-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(15, 23, 42, 0.2) transparent;
+}
+
+/* ---------- Tema escuro: complementos ---------- */
+/* Cartões internos (avaliação, horário, botões redondos do cabeçalho) */
+.dark .glass-soft {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(148, 163, 184, 0.22);
+}
+.dark .glass-soft:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+/* Bloquinho: papel um pouco mais fundo, linhas mais visíveis */
+.dark .mfl-note {
+  --paper: #f1e39a;
+}
+/* Textarea do Clerk etc. já são claros por design */
+
+/* Avatar do usuário (Clerk) no cabeçalho: mesmo diâmetro dos botões redondos (40px) */
+/* 38px: com a foto preenchendo o círculo inteiro, 40px parecia maior que os botões (que têm ícone pequeno no centro) */
+.cl-userButtonTrigger,
+.cl-userButtonAvatarBox,
+.cl-userButtonAvatarImage {
+  width: 38px !important;
+  height: 38px !important;
+}
+.cl-userButtonAvatarBox {
+  box-shadow: 0 0 0 1px var(--glass-border);
 }

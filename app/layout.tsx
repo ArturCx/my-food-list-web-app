@@ -5,6 +5,7 @@ import { ptBR } from "@clerk/localizations";
 import "./globals.css";
 import { authEnabled } from "@/lib/auth";
 import { clerkAppearance } from "@/lib/clerk-appearance";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 const caveat = Caveat({
   variable: "--font-hand",
@@ -32,7 +33,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${jakarta.variable} ${caveat.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${jakarta.variable} ${caveat.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-full">
         {authEnabled() ? <ClerkProvider localization={ptBR} appearance={clerkAppearance}>{children}</ClerkProvider> : children}
       </body>

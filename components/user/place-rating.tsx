@@ -67,7 +67,7 @@ function Stars({ value, onChange }: { value: number | null; onChange: (v: number
           onClick={() => onChange(value === n ? null : n)} // clicar na atual limpa
           className="p-0.5 transition-transform hover:scale-125 active:scale-95"
         >
-          <Star className={cn("size-5 transition-colors", n <= shown ? "fill-amber-400 text-amber-400" : "text-slate-300")} strokeWidth={2} />
+          <Star className={cn("size-5 transition-colors", n <= shown ? "fill-amber-400 text-amber-400" : "text-slate-300 dark:text-slate-600")} strokeWidth={2} />
         </button>
       ))}
     </div>
@@ -100,7 +100,7 @@ function Note({ value, onSave }: { value: string; onSave: (note: string) => Prom
         maxLength={2000}
         aria-label="Anotação"
       />
-      <span className={cn("pointer-events-none absolute right-3 bottom-2 flex items-center gap-1 text-[10px] font-bold text-emerald-700 transition-opacity", state === "saved" ? "opacity-100" : "opacity-0")}>
+      <span className={cn("pointer-events-none absolute right-3 bottom-2 flex items-center gap-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 transition-opacity", state === "saved" ? "opacity-100" : "opacity-0")}>
         <Check className="size-3" /> salvo
       </span>
     </div>

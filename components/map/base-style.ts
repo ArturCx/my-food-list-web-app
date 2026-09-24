@@ -2,6 +2,9 @@ import type { Map as MLMap } from "maplibre-gl";
 
 /** OpenFreeMap: gratuito, sem chave, sem limite. "bright" tem cor; o ruído é escondido abaixo. */
 export const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
+/** Versão escura (Dark Matter-like). É quase monocromática; recolorimos água, parques e vias abaixo. */
+export const DARK_STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
+export const styleUrlFor = (dark: boolean) => (dark ? DARK_STYLE_URL : STYLE_URL);
 /** Centro padrão: Belo Horizonte. */
 export const DEFAULT_CENTER: [number, number] = [-43.9352, -19.9245];
 /** Inclinação padrão da câmera (0 = vista de cima, 60 = máximo). */
@@ -28,8 +31,21 @@ const ROAD_COLORS = {
 };
 const MAJOR_ROAD = /(motorway|trunk|primary)(?!-link)/;
 
+/** Camadas de ruído no estilo escuro (ids com underscore) */
+const DARK_HIDDEN_PREFIXES = ["building", "aeroway", "railway", "road_oneway", "highway_path", "highway_name_other"];
+/** Cores do modo escuro: base azul-marinho profunda, com água, verde e vias legíveis. */
+const DARK_COLORS: Record<string, string> = {
+  background: "#0b1220",
+  water: "#12233f", waterway: "#12233f",
+  landuse_residential: "#0f172a", landcover_wood: "#0f2a22", landuse_park: "#12352a",
+  highway_minor: "#232c3d", highway_major_inner: "#2c3548", highway_major_subtle: "#232c3d",
+  highway_major_casing: "#151c2b", highway_motorway_inner: "#343e54", highway_motorway_casing: "#151c2b", highway_motorway_subtle: "#2c3548",
+  road_pier: "#232c3d", road_area_pier: "#0f172a",
+};
+
 /** Aplica o visual da casa ao estilo carregado: esconde ruído e recolore vias. */
-export function applyBaseStyle(m: MLMap) {
+export function applyBaseStyle(m: MLMap, dark = false) {
+  if (dark) return applyDarkStyle(m);
   for (const layer of m.getStyle().layers ?? []) {
     if (HIDDEN_LAYER_PREFIXES.some((p) => layer.id.startsWith(p))) {
       m.setLayoutProperty(layer.id, "visibility", "none");
@@ -46,4 +62,24 @@ export function applyBaseStyle(m: MLMap) {
     }
   }
   if (m.getLayer("highway-area")) m.setPaintProperty("highway-area", "fill-color", ROAD_COLORS.minor);
+}
+
+function applyDarkStyle(m: MLMap) {
+  for (const layer of m.getStyle().layers ?? []) {
+    if (DARK_HIDDEN_PREFIXES.some((p) => layer.id.startsWith(p))) {
+      m.setLayoutProperty(layer.id, "visibility", "none");
+      continue;
+    }
+    const color = DARK_COLORS[layer.id];
+    if (!color) {
+      if (layer.type === "symbol") {
+        m.setPaintProperty(layer.id, "text-color", "#94a3b8");
+        m.setPaintProperty(layer.id, "text-halo-color", "#0b1220");
+      }
+      continue;
+    }
+    if (layer.type === "background") m.setPaintProperty(layer.id, "background-color", color);
+    else if (layer.type === "fill") m.setPaintProperty(layer.id, "fill-color", color);
+    else if (layer.type === "line") m.setPaintProperty(layer.id, "line-color", color);
+  }
 }

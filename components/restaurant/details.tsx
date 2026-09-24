@@ -31,7 +31,7 @@ export function RestaurantDetails({ r, onClose, editable }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full bg-white/85 shadow-md backdrop-blur transition-transform hover:scale-105 active:scale-95"
+            className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full bg-white/85 dark:bg-white/15 shadow-md backdrop-blur transition-transform hover:scale-105 active:scale-95"
           >
             <X className="size-4" />
           </button>
@@ -47,7 +47,7 @@ export function RestaurantDetails({ r, onClose, editable }: Props) {
           {r.categories.map((c) => {
             const Icon = CATEGORY_ICON[c];
             return (
-              <span key={c} className="flex items-center gap-1.5 rounded-full bg-white/70 py-1 pr-2.5 pl-1.5 text-[11px] font-bold">
+              <span key={c} className="flex items-center gap-1.5 rounded-full bg-white/70 dark:bg-white/10 py-1 pr-2.5 pl-1.5 text-[11px] font-bold">
                 <span className="flex size-4 items-center justify-center rounded-full text-white" style={{ background: CATEGORY_COLOR[c] }}>
                   <Icon className="size-2.5" strokeWidth={2.5} />
                 </span>
@@ -73,7 +73,7 @@ export function RestaurantDetails({ r, onClose, editable }: Props) {
           href={mapsUrl}
           target="_blank"
           rel="noreferrer"
-          className="glass-soft group rounded-2xl p-3 transition-[background-color,transform] hover:bg-white/85 active:scale-[0.98]"
+          className="glass-soft group rounded-2xl p-3 transition-[background-color,transform] hover:bg-white/85 dark:bg-white/15 active:scale-[0.98]"
         >
           <Label icon={<MapPin className="size-3" />}>Endereço</Label>
           <p className="text-xs leading-relaxed">{r.address}</p>
@@ -106,7 +106,7 @@ export function RestaurantDetails({ r, onClose, editable }: Props) {
       </div>
 
       {r.instagramEmbed && (
-        <div className="animate-in fade-in overflow-hidden rounded-[20px] bg-white/50 duration-300 [animation-delay:300ms]">
+        <div className="animate-in fade-in overflow-hidden rounded-[20px] bg-white/50 dark:bg-white/10 duration-300 [animation-delay:300ms]">
           <InstagramEmbed url={r.instagramEmbed} />
         </div>
       )}
@@ -133,7 +133,7 @@ function Action({ href, primary, children }: { href: string; primary?: boolean; 
         "transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
         primary
           ? "bg-primary text-primary-foreground shadow-[0_8px_20px_rgba(15,23,42,0.25)] hover:bg-primary/90"
-          : "glass-soft hover:bg-white/85 hover:shadow-[0_6px_16px_rgba(15,23,42,0.1)]",
+          : "glass-soft hover:bg-white/85 dark:bg-white/15 hover:shadow-[0_6px_16px_rgba(15,23,42,0.1)]",
       )}
     >
       {children}

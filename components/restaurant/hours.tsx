@@ -40,7 +40,7 @@ export function Hours({ hours, compact }: { hours: Restaurant["hours"]; compact?
       <div className="text-xs leading-relaxed">
         <p>{todayRanges?.length ? `Hoje ${fmt(todayRanges)}` : "Hoje fechado"}</p>
         {open !== null && (
-          <p className={open ? "font-bold text-emerald-600" : "font-bold text-rose-500"}>
+          <p className={open ? "font-bold text-emerald-600 dark:text-emerald-400" : "font-bold text-rose-500 dark:text-rose-400"}>
             {open ? "Aberto agora" : "Fechado agora"}
           </p>
         )}
