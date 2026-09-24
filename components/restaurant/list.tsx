@@ -24,9 +24,11 @@ type Props = {
   total?: number;
   /** Filtro "Favoritos" (5 estrelas); ausente quando deslogado. */
   favorites?: { active: boolean; count: number; onChange: (v: boolean) => void };
+  /** No celular o cabeçalho (logo, ações) vive na barra do topo. */
+  hideHeader?: boolean;
 };
 
-export function RestaurantList({ restaurants, selectedSlug, onSelect, categories, onCategoriesChange, authEnabled = false, total, favorites }: Props) {
+export function RestaurantList({ restaurants, selectedSlug, onSelect, categories, onCategoriesChange, authEnabled = false, total, favorites, hideHeader = false }: Props) {
   const cats = (Object.keys(CATEGORIES) as Category[])
     .filter((c) => restaurants.some((r) => r.categories.includes(c)))
     .sort((a, b) => CATEGORIES[a].localeCompare(CATEGORIES[b], "pt-BR"));
@@ -48,6 +50,7 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
 
   return (
     <div className="flex h-full flex-col">
+      {!hideHeader && (
       <header className="flex items-center gap-3 px-5 pt-5 pb-3">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-slate-900 shadow-[0_8px_20px_rgba(15,23,42,0.25)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.6)]">
           <Image src="/logo-mfl.png" alt="" width={36} height={36} priority className="size-9" />
@@ -66,6 +69,7 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
           <AuthMenu enabled={authEnabled} />
         </div>
       </header>
+      )}
 
       {/* Filtro por categoria: linha rolável com ícone e cor de cada categoria */}
       <section aria-label="Filtrar por categoria" className="border-b border-white/60 dark:border-white/10 pb-3">
@@ -77,7 +81,7 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
             <button
               type="button"
               onClick={() => { onCategoriesChange(new Set()); favorites?.onChange(false); }}
-              className="animate-in fade-in flex min-h-7 items-center gap-1 rounded-full bg-primary/10 dark:bg-white/10 px-2.5 text-[11px] font-bold text-primary transition-colors hover:bg-primary/15 dark:hover:bg-white/15"
+              className="animate-in fade-in flex min-h-7 items-center gap-1 rounded-full bg-primary/10 dark:bg-white/12 px-2.5 text-[11px] font-bold text-primary transition-colors hover:bg-primary/15 dark:hover:bg-white/22"
             >
               <X className="size-3" /> Limpar ({categories.size + (favorites?.active ? 1 : 0)})
             </button>
@@ -92,7 +96,7 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
               className={cn(
                 "flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border pr-3 pl-2 text-xs font-semibold",
                 "transition-[background-color,color,border-color,transform] duration-200 ease-out active:scale-95",
-                favorites.active ? "border-transparent bg-amber-400 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.35)]" : "border-white/70 bg-white/45 hover:bg-white/75 dark:border-white/15 dark:bg-white/10 dark:hover:bg-white/15",
+                favorites.active ? "border-transparent bg-amber-400 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.35)]" : "border-white/70 bg-white/45 hover:bg-white/75 dark:border-white/15 dark:bg-white/12 dark:hover:bg-white/22",
               )}
             >
               <span className={cn("flex size-5 items-center justify-center rounded-full", favorites.active ? "bg-slate-900/15" : "bg-amber-400 text-slate-900")}>
@@ -136,8 +140,8 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
                 className={cn(
                   "group relative flex w-full items-center gap-3 rounded-2xl p-3 text-left",
                   "transition-[background-color,box-shadow,transform] duration-200 ease-out",
-                  "hover:bg-white/55 dark:bg-white/10 hover:shadow-[0_6px_18px_rgba(15,23,42,0.08)] active:scale-[0.99]",
-                  active && "bg-white/90 dark:bg-white/15 shadow-[0_10px_28px_rgba(15,23,42,0.14)] ring-1 ring-white dark:ring-white/20",
+                  "hover:bg-white/55 dark:bg-white/12 hover:shadow-[0_6px_18px_rgba(15,23,42,0.08)] active:scale-[0.99]",
+                  active && "bg-white/90 dark:bg-white/20 shadow-[0_10px_28px_rgba(15,23,42,0.14)] ring-1 ring-white dark:ring-white/20",
                 )}
               >
                 {/* Barra lateral na cor da categoria, aparece no item ativo */}
@@ -160,14 +164,14 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
                   </div>
                 </div>
                 {!r.coordinates && (
-                  <span className="rounded-full bg-white/60 dark:bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground">sem pin</span>
+                  <span className="rounded-full bg-white/60 dark:bg-white/12 px-2 py-0.5 text-[10px] text-muted-foreground">sem pin</span>
                 )}
               </button>
             </li>
           );
         })}
         {visible.length === 0 && (
-          <li className="animate-in fade-in zoom-in-95 m-2 rounded-2xl bg-white/50 dark:bg-white/10 p-6 text-center text-sm text-muted-foreground">
+          <li className="animate-in fade-in zoom-in-95 m-2 rounded-2xl bg-white/50 dark:bg-white/12 p-6 text-center text-sm text-muted-foreground">
             {favorites?.active && favorites.count === 0 ? "Dê 5 estrelas a um lugar e ele aparece aqui." : "Nenhum lugar com essa combinação."}
           </li>
         )}
@@ -188,8 +192,8 @@ function CategoryChip({ category, active, disabled, onClick }: { category: Categ
       className={cn(
         "flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border pr-3 pl-2 text-xs font-semibold",
         "transition-[background-color,color,border-color,transform,opacity] duration-200 ease-out active:scale-95",
-        active ? "border-transparent text-white shadow-[0_6px_16px_rgba(15,23,42,0.18)]" : "border-white/70 dark:border-white/15 bg-white/45 dark:bg-white/10 hover:bg-white/75 dark:bg-white/15",
-        disabled && "cursor-not-allowed opacity-35 hover:bg-white/45 dark:bg-white/10",
+        active ? "border-transparent text-white shadow-[0_6px_16px_rgba(15,23,42,0.18)]" : "border-white/70 dark:border-white/15 bg-white/45 dark:bg-white/12 hover:bg-white/75 dark:bg-white/20",
+        disabled && "cursor-not-allowed opacity-35 hover:bg-white/45 dark:bg-white/12",
       )}
       style={active ? { background: color } : undefined}
     >

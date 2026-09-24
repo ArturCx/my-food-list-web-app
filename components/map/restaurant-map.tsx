@@ -99,7 +99,7 @@ type Props = {
   /** Mensagem curta para o usuário (ex.: localização aproximada). */
   onNotice?: (msg: string) => void;
   /** Espaço ocupado por painéis flutuantes, para o flyTo não esconder o pin atrás deles. */
-  padding?: { left: number; right: number };
+  padding?: { left?: number; right?: number; top?: number; bottom?: number };
 };
 
 /** `category` é a primeira do lugar: define a cor do pin. */
@@ -224,6 +224,8 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
   const onDeselectRef = useRef(onDeselect);
   const onNoticeRef = useRef(onNotice);
   const dataRef = useRef({ pins, selectedSlug });
+  const paddingRef = useRef(padding);
+  useEffect(() => { paddingRef.current = padding; }, [padding]);
   useEffect(() => {
     onSelectRef.current = onSelect;
     onDeselectRef.current = onDeselect;
@@ -371,6 +373,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
   }, [pins, selectedSlug]);
 
   // Voa até o selecionado e, ao chegar, começa a girar devagar em torno dele.
+  // Depende só da seleção: o padding (que muda ao arrastar o sheet no celular) é lido de um ref.
   useEffect(() => {
     const m = map.current;
     stopOrbit();
@@ -378,16 +381,17 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
     if (!m || !pin) return;
     let cancelled = false;
     m.once("moveend", () => { if (!cancelled) startOrbit(m); });
+    const pad = paddingRef.current;
     m.flyTo({
       center: [pin.coordinates.lng, pin.coordinates.lat],
       zoom: Math.max(m.getZoom(), 15),
       pitch: Math.max(m.getPitch(), DEFAULT_PITCH),
-      padding: { left: padding?.left ?? 0, right: padding?.right ?? 0, top: 0, bottom: 0 },
+      padding: { left: pad?.left ?? 0, right: pad?.right ?? 0, top: pad?.top ?? 0, bottom: pad?.bottom ?? 0 },
       duration: 700,
     });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSlug, pins, padding]);
+  }, [selectedSlug, pins]);
 
   return <div ref={container} className="h-full w-full" />;
 }
