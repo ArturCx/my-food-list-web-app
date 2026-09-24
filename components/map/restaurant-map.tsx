@@ -10,9 +10,11 @@ import {
   type MapMouseEvent,
 } from "maplibre-gl";
 import { CATEGORY_COLOR } from "@/lib/categories";
+import { locateUser } from "@/lib/locate";
 import type { Category, RestaurantPin } from "@/lib/schema";
 
-import { STYLE_URL, DEFAULT_CENTER, DEFAULT_PITCH, applyBaseStyle } from "./base-style";
+import { styleUrlFor, DEFAULT_CENTER, DEFAULT_PITCH, applyBaseStyle } from "./base-style";
+import { useTheme } from "@/lib/theme";
 
 /** Usado só se não houver pins para calcular o zoom sem agrupamento. */
 const FALLBACK_ZOOM = 13;
@@ -30,12 +32,13 @@ const ACTIVE_COLOR = "#f43f5e";
  * Pins são imagens registradas no mapa e desenhados pelo WebGL no mesmo frame
  * que os tiles. Marcadores HTML ficariam sempre um frame atrasados.
  */
+// viewBox com 2px de folga em volta: o traço branco (2px) do topo da gota saía do quadro e era cortado.
 const PIN_W = 28;
-const PIN_H = 37;
+const PIN_H = 35;
 const PIN_SCALE = 2; // renderiza em 2x para ficar nítido em telas retina
 
 function pinSvg(fill: string) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_W * PIN_SCALE}" height="${PIN_H * PIN_SCALE}" viewBox="0 0 24 32">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_W * PIN_SCALE}" height="${PIN_H * PIN_SCALE}" viewBox="-2 -2 28 35">
     <path d="M12 31c-1.2-8.5-11-13.4-11-20A11 11 0 1 1 23 11c0 6.6-9.8 11.5-11 20z" fill="${fill}" stroke="#fff" stroke-width="2"/>
     <circle cx="12" cy="11" r="4" fill="#fff"/>
   </svg>`;
@@ -93,6 +96,8 @@ type Props = {
   onSelect: (slug: string) => void;
   /** Clique no mapa fora de pins e clusters. */
   onDeselect?: () => void;
+  /** Mensagem curta para o usuário (ex.: localização aproximada). */
+  onNotice?: (msg: string) => void;
   /** Espaço ocupado por painéis flutuantes, para o flyTo não esconder o pin atrás deles. */
   padding?: { left: number; right: number };
 };
@@ -111,7 +116,7 @@ function toGeoJSON(pins: RestaurantPin[], selectedSlug: string | null): GeoJSON.
   };
 }
 
-function addLayers(m: MLMap) {
+function addLayers(m: MLMap, dark: boolean) {
   m.addSource(SOURCE, {
     type: "geojson",
     data: toGeoJSON([], null),
@@ -126,7 +131,7 @@ function addLayers(m: MLMap) {
     type: "circle",
     source: SOURCE,
     filter: ["has", "point_count"],
-    paint: { "circle-radius": 27, "circle-color": "rgba(15,23,42,0.12)", "circle-blur": 0.6 },
+    paint: { "circle-radius": 27, "circle-color": dark ? "rgba(0,0,0,0.35)" : "rgba(15,23,42,0.12)", "circle-blur": 0.6 },
   });
   m.addLayer({
     id: L_CLUSTER,
@@ -135,9 +140,9 @@ function addLayers(m: MLMap) {
     filter: ["has", "point_count"],
     paint: {
       "circle-radius": 22,
-      "circle-color": "rgba(255,255,255,0.88)",
+      "circle-color": dark ? "rgba(30,41,59,0.92)" : "rgba(255,255,255,0.88)",
       "circle-stroke-width": 1,
-      "circle-stroke-color": "rgba(255,255,255,0.95)",
+      "circle-stroke-color": dark ? "rgba(148,163,184,0.5)" : "rgba(255,255,255,0.95)",
     },
   });
   m.addLayer({
@@ -151,7 +156,7 @@ function addLayers(m: MLMap) {
       "text-size": 14,
       "text-allow-overlap": true,
     },
-    paint: { "text-color": "#0f172a" },
+    paint: { "text-color": dark ? "#f1f5f9" : "#0f172a" },
   });
 
   // Halo pulsante sob o pin selecionado (raio animado em animateHalo).
@@ -205,7 +210,10 @@ function animateHalo(m: MLMap) {
 /** Graus por segundo da rotação lenta em torno do pin selecionado. */
 const ORBIT_SPEED = 2.5;
 
-export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect, padding }: Props) {
+export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect, onNotice, padding }: Props) {
+  const theme = useTheme();
+  const dark = theme === "dark";
+  const darkRef = useRef(dark);
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const loaded = useRef(false);
@@ -214,12 +222,14 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
   // Refs para os handlers do mapa não ficarem presos a closures antigas.
   const onSelectRef = useRef(onSelect);
   const onDeselectRef = useRef(onDeselect);
+  const onNoticeRef = useRef(onNotice);
   const dataRef = useRef({ pins, selectedSlug });
   useEffect(() => {
     onSelectRef.current = onSelect;
     onDeselectRef.current = onDeselect;
+    onNoticeRef.current = onNotice;
     dataRef.current = { pins, selectedSlug };
-  }, [onSelect, onDeselect, pins, selectedSlug]);
+  }, [onSelect, onDeselect, onNotice, pins, selectedSlug]);
 
   // Rotação lenta ("órbita") em torno do pin selecionado.
   const orbitRaf = useRef(0);
@@ -249,7 +259,7 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
     const defaultZoom = noClusterZoom(dataRef.current.pins);
     const m = new MLMap({
       container: container.current,
-      style: STYLE_URL,
+      style: styleUrlFor(darkRef.current),
       center: DEFAULT_CENTER,
       zoom: defaultZoom,
       pitch: DEFAULT_PITCH,
@@ -261,26 +271,51 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
     // posição recentralizava o mapa e desfazia o voo até o pin selecionado.
     // Só funciona em HTTPS ou localhost. Se negado, o mapa fica em BH.
     const geolocate = new GeolocateControl({
-      positionOptions: { enableHighAccuracy: true },
+      // maximumAge: aceita uma posição de até 30s atrás (resposta imediata); timeout: desiste em 10s.
+      positionOptions: { enableHighAccuracy: true, maximumAge: 30_000, timeout: 10_000 },
       trackUserLocation: false,
       showUserLocation: true,
       showAccuracyCircle: true,
       fitBoundsOptions: { maxZoom: defaultZoom, pitch: DEFAULT_PITCH },
     });
     m.addControl(geolocate, "bottom-right");
+    // Clique em "localizar": só leva até o usuário, sem travar nele. A órbita precisa parar antes,
+    // porque o setBearing por frame cancelaria o voo do controle no mesmo instante.
+    // Botão "localizar": navegador primeiro, IP como fallback. Só leva até lá, sem travar.
+    // A órbita precisa parar antes, porque o setBearing por frame cancelaria o voo.
+    const goToUser = async (auto: boolean) => {
+      try {
+        const loc = await locateUser({ timeoutMs: auto ? 6000 : 8000 });
+        stopOrbit();
+        m.flyTo({ center: [loc.lng, loc.lat], zoom: loc.approximate ? Math.min(defaultZoom, 13) : Math.max(m.getZoom(), defaultZoom), pitch: DEFAULT_PITCH, duration: 900 });
+        if (loc.approximate) onNoticeRef.current?.(`Localização aproximada${loc.city ? ` (${loc.city})` : ""}: o navegador não conseguiu uma posição precisa.`);
+      } catch {
+        if (!auto) onNoticeRef.current?.("Não foi possível obter sua localização.");
+      }
+    };
+    m.on("load", () => {
+      // Substitui o clique nativo do controle (que só usa o navegador e fica mudo ao falhar).
+      const btn = m.getContainer().querySelector<HTMLButtonElement>(".maplibregl-ctrl-geolocate");
+      btn?.addEventListener("click", (e) => { e.stopImmediatePropagation(); void goToUser(false); }, true);
+    });
     map.current = m;
 
-    m.on("load", async () => {
-      applyBaseStyle(m);
+    // Roda no carregamento e a cada troca de estilo (tema): o setStyle apaga imagens, sources e camadas.
+    let firstLoad = true;
+    m.on("style.load", async () => {
+      applyBaseStyle(m, darkRef.current);
       await registerPinImages(m);
       if (!map.current) return; // desmontou enquanto carregava
-      addLayers(m);
-      stopHalo.current = animateHalo(m);
+      if (!m.getSource(SOURCE)) addLayers(m, darkRef.current);
       loaded.current = true;
       const { pins, selectedSlug } = dataRef.current;
       (m.getSource(SOURCE) as GeoJSONSource).setData(toGeoJSON(pins, selectedSlug));
-      // Já abre centralizado em quem está usando.
-      geolocate.trigger();
+      if (firstLoad) {
+        firstLoad = false;
+        stopHalo.current = animateHalo(m);
+        // Já abre centralizado em quem está usando (silencioso se falhar).
+        void goToUser(true);
+      }
     });
 
     // Interação
@@ -318,6 +353,15 @@ export default function RestaurantMap({ pins, selectedSlug, onSelect, onDeselect
       loaded.current = false;
     };
   }, []);
+
+  // Tema: troca o estilo do mapa; o handler de style.load reconstrói camadas e pins.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || darkRef.current === dark) return;
+    darkRef.current = dark;
+    loaded.current = false;
+    m.setStyle(styleUrlFor(dark));
+  }, [dark]);
 
   // Dados e seleção: 28 pontos, reenviar o GeoJSON inteiro é barato.
   useEffect(() => {
