@@ -7,7 +7,7 @@ import { RestaurantList } from "@/components/restaurant/list";
 import { RestaurantDetails } from "@/components/restaurant/details";
 import { cn } from "@/lib/utils";
 import type { Category, Restaurant, RestaurantPin } from "@/lib/schema";
-import { UserPlacesProvider } from "@/components/user/user-places-provider";
+import { useUserPlaces } from "@/components/user/user-places-provider";
 
 /** Sem seleção mostra tudo; com seleção, mostra só quem tem TODAS as categorias marcadas. */
 export function matchesCategories(r: Restaurant, selected: Set<Category>) {
@@ -18,18 +18,46 @@ export function matchesCategories(r: Restaurant, selected: Set<Category>) {
 const LIST_W = 400;
 const PANEL_W = 500;
 const GUTTER = 28;
+/** Painel de detalhe fica mais à esquerda para não cobrir os controles do mapa (zoom, localizar). */
+const PANEL_RIGHT = 65;
 
-export function Explorer({ restaurants, editable = false, authEnabled = false }: { restaurants: Restaurant[]; editable?: boolean; authEnabled?: boolean }) {
+export function Explorer({
+  restaurants,
+  editable = false,
+  authEnabled = false,
+}: {
+  restaurants: Restaurant[];
+  editable?: boolean;
+  authEnabled?: boolean;
+}) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [categories, setCategories] = useState<Set<Category>>(() => new Set());
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const { signedIn, places } = useUserPlaces();
+  // Favoritos = 5 estrelas do usuário. Deslogado, o filtro some e é desligado.
+  const favoriteSlugs = useMemo(() => new Set(Object.entries(places).filter(([, v]) => v.rating === 5).map(([k]) => k)), [places]);
+  const favoritesActive = favoritesOnly && signedIn;
+  const base = useMemo(() => (favoritesActive ? restaurants.filter((r) => favoriteSlugs.has(r.slug)) : restaurants), [restaurants, favoritesActive, favoriteSlugs]);
   const [listOpen, setListOpen] = useState(false); // só mobile
+  const [notice, setNotice] = useState<string | null>(null);
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(null), 6000);
+    return () => clearTimeout(t);
+  }, [notice]);
 
   const pins = useMemo<RestaurantPin[]>(
     () =>
-      restaurants
+      base
         .filter((r) => r.coordinates && matchesCategories(r, categories))
-        .map((r) => ({ slug: r.slug, name: r.name, categories: r.categories, badge: r.badge, coordinates: r.coordinates! })),
-    [restaurants, categories],
+        .map((r) => ({
+          slug: r.slug,
+          name: r.name,
+          categories: r.categories,
+          badge: r.badge,
+          coordinates: r.coordinates!,
+        })),
+    [base, categories],
   );
 
   const selected = restaurants.find((r) => r.slug === selectedSlug) ?? null;
@@ -47,64 +75,91 @@ export function Explorer({ restaurants, editable = false, authEnabled = false }:
   }, [close]);
 
   const padding = useMemo(
-    () => ({ left: LIST_W + GUTTER, right: selected ? PANEL_W + GUTTER : 0 }),
+    () => ({
+      left: LIST_W + GUTTER,
+      right: selected ? PANEL_W + PANEL_RIGHT : 0,
+    }),
     [selected],
   );
 
   return (
-    <UserPlacesProvider enabled={authEnabled}>
-    <div className="relative h-dvh w-full overflow-hidden bg-background">
-      {/* Mapa em tela cheia */}
-      <div className="absolute inset-0">
-        <RestaurantMap pins={pins} selectedSlug={selectedSlug} onSelect={onSelect} onDeselect={close} padding={padding} />
-      </div>
+      <div className="relative h-dvh w-full overflow-hidden bg-background">
+        {/* Mapa em tela cheia */}
+        <div className="absolute inset-0">
+          <RestaurantMap
+            pins={pins}
+            selectedSlug={selectedSlug}
+            onSelect={onSelect}
+            onDeselect={close}
+            onNotice={setNotice}
+            padding={padding}
+          />
+        </div>
 
-      {/* Lista flutuante (desktop) / sheet (mobile) */}
-      <aside
-        className={cn(
-          "glass absolute z-10 flex flex-col overflow-hidden rounded-[28px] transition-transform duration-300",
-          "md:top-7 md:bottom-7 md:left-7 md:w-[400px] md:translate-y-0",
-          "inset-x-3 bottom-3 top-[18dvh]",
-          listOpen ? "translate-y-0" : "translate-y-[calc(100%+12px)] md:translate-y-0",
+        {/* Lista flutuante (desktop) / sheet (mobile) */}
+        <aside
+          className={cn(
+            "glass absolute z-10 flex flex-col overflow-hidden rounded-[28px] transition-transform duration-300",
+            "md:top-7 md:bottom-7 md:left-7 md:w-100 md:translate-y-0",
+            "inset-x-3 bottom-3 top-[18dvh]",
+            listOpen
+              ? "translate-y-0"
+              : "translate-y-[calc(100%+12px)] md:translate-y-0",
+          )}
+        >
+          <RestaurantList
+            restaurants={base}
+            total={restaurants.length}
+            favorites={signedIn ? { active: favoritesOnly, count: favoriteSlugs.size, onChange: setFavoritesOnly } : undefined}
+            selectedSlug={selectedSlug}
+            onSelect={onSelect}
+            categories={categories}
+            onCategoriesChange={setCategories}
+            authEnabled={authEnabled}
+          />
+        </aside>
+
+        {notice && (
+          <div
+            role="status"
+            className="glass animate-in fade-in slide-in-from-top-2 absolute top-5 left-1/2 z-40 max-w-[min(92vw,480px)] -translate-x-1/2 rounded-full px-4 py-2.5 text-center text-xs font-semibold"
+          >
+            {notice}
+          </div>
         )}
-      >
-        <RestaurantList
-          restaurants={restaurants}
-          selectedSlug={selectedSlug}
-          onSelect={onSelect}
-          categories={categories}
-          onCategoriesChange={setCategories}
-          pinCount={pins.length}
-          authEnabled={authEnabled}
-        />
-      </aside>
 
-      {/* Botão da lista (mobile) */}
-      <button
-        type="button"
-        onClick={() => setListOpen((v) => !v)}
-        aria-expanded={listOpen}
-        className="glass absolute bottom-5 left-1/2 z-20 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-sm font-bold transition-transform active:scale-95 md:hidden"
-      >
-        {listOpen ? <X className="size-4" /> : <List className="size-4" />}
-        {listOpen ? "Fechar" : `${restaurants.length} lugares`}
-      </button>
+        {/* Botão da lista (mobile) */}
+        <button
+          type="button"
+          onClick={() => setListOpen((v) => !v)}
+          aria-expanded={listOpen}
+          className="glass absolute bottom-5 left-1/2 z-20 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-sm font-bold transition-transform active:scale-95 md:hidden"
+        >
+          {listOpen ? <X className="size-4" /> : <List className="size-4" />}
+          {listOpen ? "Fechar" : `${restaurants.length} lugares`}
+        </button>
 
-      {/* Painel de detalhe */}
-      <section
-        aria-hidden={!selected}
-        className={cn(
-          "glass mfl-scroll absolute z-30 overflow-y-auto rounded-[28px] transition-all duration-300",
-          "md:top-7 md:bottom-7 md:right-7 md:left-auto md:w-[500px]",
-          "inset-x-3 bottom-3 top-[12dvh]",
-          selected
-            ? "translate-y-0 opacity-100 md:translate-x-0"
-            : "pointer-events-none translate-y-[calc(100%+12px)] opacity-0 md:translate-x-6 md:translate-y-0",
-        )}
-      >
-        {selected && <RestaurantDetails key={selected.slug} r={selected} onClose={close} editable={editable} />}
-      </section>
+        {/* Painel de detalhe */}
+        <section
+          aria-hidden={!selected}
+          className={cn(
+            "glass mfl-scroll absolute z-30 overflow-y-auto rounded-[28px] transition-all duration-300",
+            "md:top-7 md:bottom-7 md:right-16.25 md:left-auto md:w-125",
+            "inset-x-3 bottom-3 top-[12dvh]",
+            selected
+              ? "translate-y-0 opacity-100 md:translate-x-0"
+              : "pointer-events-none translate-y-[calc(100%+12px)] opacity-0 md:translate-x-6 md:translate-y-0",
+          )}
+        >
+          {selected && (
+            <RestaurantDetails
+              key={selected.slug}
+              r={selected}
+              onClose={close}
+              editable={editable}
+            />
+          )}
+        </section>
     </div>
-    </UserPlacesProvider>
   );
 }
