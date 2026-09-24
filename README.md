@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://my-food-list-web-app.vercel.app/">
+  <a href="https://my-food-list.vercel.app/">
     <img src="public/brand/logo-light-512.png" alt="My Food List" width="200" />
   </a>
 </p>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>Live at <a href="https://my-food-list-web-app.vercel.app/">my-food-list-web-app.vercel.app</a></strong>
+  <strong>Live at <a href="https://my-food-list.vercel.app/">my-food-list.vercel.app</a></strong>
 </p>
 
 <p align="center">
