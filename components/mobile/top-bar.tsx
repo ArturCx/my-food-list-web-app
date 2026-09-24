@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Route } from "lucide-react";
 import { AuthMenu } from "@/components/user/auth-menu";
+import { BrandMark } from "@/components/brand-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 /** Barra flutuante do topo no celular: logo, título e ações. */
@@ -23,9 +23,7 @@ export function TopBar({ title, subtitle, authEnabled, backHref }: Props) {
           <ArrowLeft className="size-4" />
         </Link>
       ) : (
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-900">
-          <Image src="/logo-mfl.png" alt="" width={32} height={32} priority className="size-8" />
-        </div>
+        <BrandMark size={44} />
       )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm leading-tight font-extrabold tracking-tight">{title}</p>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Route, SlidersHorizontal, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,6 +10,7 @@ import { CATEGORY_ICON } from "@/lib/category-icons";
 import { CATEGORIES, type Category, type Restaurant } from "@/lib/schema";
 import { matchesCategories } from "@/components/explorer";
 import { AuthMenu } from "@/components/user/auth-menu";
+import { BrandMark } from "@/components/brand-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 type Props = {
@@ -52,9 +52,7 @@ export function RestaurantList({ restaurants, selectedSlug, onSelect, categories
     <div className="flex h-full flex-col">
       {!hideHeader && (
       <header className="flex items-center gap-3 px-5 pt-5 pb-3">
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-slate-900 shadow-[0_8px_20px_rgba(15,23,42,0.25)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.6)]">
-          <Image src="/logo-mfl.png" alt="" width={36} height={36} priority className="size-9" />
-        </div>
+        <BrandMark size={56} />
         <div className="min-w-0">
           <h1 className="text-xl font-extrabold tracking-tight">My Food List</h1>
           <p className="text-xs text-muted-foreground">

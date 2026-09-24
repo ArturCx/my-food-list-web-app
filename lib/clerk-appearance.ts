@@ -27,7 +27,7 @@ export const clerkAppearance: Appearance = {
     fontWeight: { normal: 500, medium: 600, semibold: 700, bold: 800 },
   },
   options: {
-    logoImageUrl: "/icon.png",
+    logoImageUrl: "/brand/logo-light-512.png",
     logoPlacement: "inside",
     socialButtonsVariant: "blockButton",
     socialButtonsPlacement: "top",
