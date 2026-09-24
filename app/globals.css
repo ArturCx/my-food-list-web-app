@@ -50,8 +50,8 @@
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.65 0.15 260);
-  --glass: rgba(15, 23, 42, 0.8);
-  --glass-strong: rgba(15, 23, 42, 0.92);
+  --glass: rgba(15, 23, 42, 0.93);
+  --glass-strong: rgba(15, 23, 42, 0.97);
   --glass-border: rgba(148, 163, 184, 0.22);
   --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
@@ -307,11 +307,11 @@
 /* ---------- Tema escuro: complementos ---------- */
 /* Cartões internos (avaliação, horário, botões redondos do cabeçalho) */
 .dark .glass-soft {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 .dark .glass-soft:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.16);
 }
 /* Bloquinho: papel um pouco mais fundo, linhas mais visíveis */
 .dark .mfl-note {
@@ -329,4 +329,15 @@
 }
 .cl-userButtonAvatarBox {
   box-shadow: 0 0 0 1px var(--glass-border);
+}
+
+/* Celular: controles do mapa (zoom, localizar) sobem junto com o bottom sheet */
+@media (max-width: 767px) {
+  .maplibregl-ctrl-bottom-right {
+    bottom: calc(var(--sheet-h, 92px) + 8px);
+    transition: bottom 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .maplibregl-ctrl-bottom-left {
+    bottom: calc(var(--sheet-h, 92px) + 4px);
+  }
 }

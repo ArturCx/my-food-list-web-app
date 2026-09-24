@@ -33,7 +33,7 @@ export function RouteAddButton({ slug }: { slug: string }) {
         className={cn(
           "inline-flex min-h-11 items-center gap-2 rounded-[14px] px-4 text-[13px] font-bold [&_svg]:size-4",
           "transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:opacity-40",
-          on ? "bg-blue-600 text-white shadow-[0_8px_20px_rgba(37,99,235,0.35)]" : "glass-soft hover:bg-white/85 dark:bg-white/15",
+          on ? "bg-blue-600 text-white shadow-[0_8px_20px_rgba(37,99,235,0.35)]" : "glass-soft hover:bg-white/85 dark:bg-white/20",
         )}
       >
         {on ? <Check /> : <Plus />}
